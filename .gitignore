@@ -87,3 +87,10 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Pycharm project settings
+.idea/*
+
+# Backup garbage
+*.ini
+*.bak
