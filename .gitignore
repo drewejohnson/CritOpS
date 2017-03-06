@@ -94,3 +94,6 @@ ENV/
 # Backup garbage
 *.ini
 *.bak
+
+# SCALE stuff
+applet_resources/
