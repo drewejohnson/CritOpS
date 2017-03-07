@@ -46,6 +46,10 @@ def read_param(_pfile):
             else:
                 utils.error('Variable character {} not supported at this moment.'.format(_lSplit[1]),
                             _locStr.format(_pfile.name, _count))
+        elif _lSplit[0] in gp.iter_floats:
+            gp.__dict__[_lSplit[0]] = float(_lSplit[1])
+        elif _lSplit[0] in gp.iter_ints:
+            gp.__dict__[_lSplit[0]] = int(_lSplit[1])
         _line = _rLine()
         _count += 1
     utils.vprint('  done')
@@ -61,7 +65,7 @@ def check_inputs():
             utils.error('Variable {} must be integer, not {}'.format(_int, gp.__dict__[_int]),
                         'check_inputs()')
         try:
-            assert gp.__dict__[_int] > 1
+            assert gp.__dict__[_int] > 0
         except AssertionError:
             utils.error('Variable {} must be positive, not {}'.format(_int, gp.__dict__[_int]),
                         'check_inputs()')
