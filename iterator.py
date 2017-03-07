@@ -14,8 +14,11 @@ Functions:
 Classes:
 
 """
+import subprocess
+
 import globalparams as gp
 import utils
+from outputs import parse_scale_out_eig
 
 
 def makefile(_tfile, _iter):
@@ -47,7 +50,18 @@ def itermain():
 
     gp.k_vec.append(gp.k_guess)
 
-    utils.vprint("Starting the iteration procedure....")
+    utils.vprint("Starting the iteration procedure....\n")
 
     for _n in range(gp.iter_lim):
-        makefile(gp.args.inp_file, _n)
+        _iter_file = makefile(gp.args.inp_file, _n)
+        utils.vprint('Running SCALE iteration number {}'.format(_n))
+        subprocess.run([gp.exe_str, _iter_file])
+        utils.vprint('  done')
+        stat, _k = parse_scale_out_eig(_iter_file.replace('.inp', '.out'))
+        if stat:  # successful operation
+            gp.k_vec.append(_k)
+        else:
+            utils.error('Could not find value of k-eff for iteration file {0}.inp\n'
+                        'Check {0}.out for error message'.format(_iter_file.split('.')[0]),
+                        'itermain() of iteration {}'.format(_n))
+            # todo: Parse through output and find cause of error

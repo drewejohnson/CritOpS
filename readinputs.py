@@ -32,6 +32,8 @@ def read_param(_pfile):
     _count = 1
     _locStr = 'read_param() for parameter file {}  - line {}'
 
+    # todo: add option to change exec_string in param_file
+
     while _line != "":
         _lSplit = _line.split()
         if _lSplit[0] == 'iter_var':
