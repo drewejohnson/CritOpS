@@ -47,7 +47,7 @@ def parse_scale_out_eig(_ofile):
     return _stat, _rK
 
 
-def output_landing(_out_type, _itervar=""):
+def output_landing(_out_type):
     """
     Write the output file according to the type of output
     :param _out_type: Flag indicating the reason the program terminated
@@ -65,3 +65,4 @@ def output_landing(_out_type, _itervar=""):
                     2: "Terminated due to exceeding the iteration limit {}".format(gp.iter_lim)
                     }
     print('End of operation. Status: {}'.format(out_messages[_out_type]))
+
