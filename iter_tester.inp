@@ -35,7 +35,7 @@ read comp
 ' -- Stainless steel
  ss304 30  1.0  end
 ' -- Reflector
-   b4c 4  1.0 600.0 end
+ ss304 4  1.0 600.0 end
 
 end comp
 
@@ -66,10 +66,11 @@ end parameters
 
 read materials
 
-  mix=1 end
-  mix=2 pn=2 end
-  mix=3 end
-  mix=4 pn=2 end
+  mix=1 com="in fuel" end
+  mix=10 com="out fuel" end
+  mix=2 pn=2 com="HX" end
+  mix=3 com="pipe" end
+  mix=4 com="refl" pn=2 end
 
 end materials
 
@@ -86,7 +87,7 @@ global unit 1
     media 3 1 11
     media 2 1 12
     media 3 1 13
-    media 1 1 14
+    media 10 1 14
     cuboid 20 5   0  0 -$del_z
     cuboid 21 70  5  0 -$del_z
     cuboid 22 72  70 0 -$del_z
@@ -102,7 +103,9 @@ global unit 1
     boundary 99 4 4
 end geometry
 
-
+read bounds
+  +x=vac +y=refl -x=refl -y=vac
+end bounds
 end model
 
 
