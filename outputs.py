@@ -14,7 +14,7 @@ Functions:
 Classes:
 
 """
-
+import globalparams as gp
 import utils
 
 
@@ -45,3 +45,23 @@ def parse_scale_out_eig(_ofile):
             _line = _outObj.readline()
     utils.vprint('  done')
     return _stat, _rK
+
+
+def output_landing(_out_type, _itervar=""):
+    """
+    Write the output file according to the type of output
+    :param _out_type: Flag indicating the reason the program terminated
+        0: Nothing went wrong
+        1: Desired update value for iteration parameter twice exceeded the maximum value from the parameter file
+       -1: Desired update value for iteration parameter twice exceeded the minimum value from the parameter file
+        2: Exceeded the total number of iterations allotted
+    :return:
+    """
+    out_messages = {0: " Completed successfullly",
+                    1: "Terminated due to iteration parameter {} twice exceeding max value {}".format(
+                        list(gp.iter_vars.keys())[0], gp.iter_vars[list(gp.iter_vars.keys())[0]][2]),
+                    -1: "Terminated due to iteration parameter {} twice exceeding minimum value {}".format(
+                        list(gp.iter_vars.keys())[0], gp.iter_vars[list(gp.iter_vars.keys())[0]][2], ),
+                    2: "Terminated due to exceeding the iteration limit {}".format(gp.iter_lim)
+                    }
+    print('End of operation. Status: {}'.format(out_messages[_out_type]))
