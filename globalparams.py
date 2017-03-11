@@ -27,7 +27,6 @@ parser.add_argument('-v', '--verbose', help='reveal more of the mystery behind t
                     action='store_true')
 parser.add_argument('-l', '--license', help='show license information', type=show_license)
 # todo: make the -l command work without input files
-# todo: Add formattable execution statement i.e. -x "C:\SCALE-6.2.1\bin\scalerte {} > z{}.out"
 args = None
 supVarChars = ('$',)  # will add more later
 
