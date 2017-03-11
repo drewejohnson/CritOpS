@@ -16,6 +16,7 @@ Functions:
 Classes:
 
 """
+import os.path
 import globalparams as gp
 import utils
 
@@ -100,7 +101,8 @@ def check_inputs():
                                                                                           gp.args.inp_file.name),
                     'check_inputs()')
 
-    # todo: check to make sure exe_str exists
+    if not os.path.isfile(gp.exe_str):
+        utils.error('Execution file {} does not exist'.format(gp.exe_str), 'check_inputs()')
 
     utils.vprint('  done')
 
