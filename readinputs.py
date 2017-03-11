@@ -100,6 +100,8 @@ def check_inputs():
                                                                                           gp.args.inp_file.name),
                     'check_inputs()')
 
+    # todo: check to make sure exe_str exists
+
     utils.vprint('  done')
 
 

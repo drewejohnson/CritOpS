@@ -18,20 +18,33 @@ Classes:
 """
 import globalparams as gp
 
-line_break = '-' * 10 + '\n'
+lineBreakShort = '-' * 10 + '\n'
+
+
+def oprint(_msg):
+    """
+    Print message to stdout if output argument not chosen.
+    Else, append message to output file"
+    """
+    if gp.args.output is None:
+        print(_msg)
+    else:
+        with open(gp.args.output, 'a') as outobj:
+            outobj.write(_msg + '\n')
 
 
 def warning(_msg, _loc=None):
     """Produce a non-fatal warning message"""
-    print(line_break + _msg, end="")
+    oprint(lineBreakShort + _msg)
     if _loc is not None:
-        print(" in " + _loc, end="")
-    print(line_break[::-1])
+        oprint(" in " + _loc)
+    oprint(lineBreakShort[::-1])
 
 
 def error(_msg, _loc):
     """Produce a fatal error message"""
-    raise SystemExit(line_break + _msg + "\nin " + _loc)
+    oprint(lineBreakShort + "Fatal error: " + _msg + "\nin " + _loc)
+    raise SystemExit
 
 
 def show_license():
@@ -44,4 +57,4 @@ def show_license():
 def vprint(_msg):
     """Print a chatty message"""
     if gp.args.verbose:
-        print(_msg)
+        oprint(_msg)

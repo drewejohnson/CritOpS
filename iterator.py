@@ -92,6 +92,7 @@ def itermain():
         _n += 1
         _iter_file = makefile(gp.args.inp_file, _n)
         utils.vprint('Running SCALE iteration number {}...'.format(_n))
+        # todo: Add try/except for errors
         subprocess.run([gp.exe_str, _iter_file])
         utils.vprint('  done')
         stat, _k = parse_scale_out_eig(_iter_file.replace('.inp', '.out'))
