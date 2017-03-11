@@ -100,3 +100,7 @@ applet_resources/
 *.ps
 *.msg
 *.tempdir.path
+
+# Scheduler
+*.pbs
+zout*

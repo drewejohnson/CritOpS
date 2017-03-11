@@ -1,0 +1,4 @@
+var_char $
+iter_var del_z 10 5.0 15.0
+iter_lim 5
+exe_str /nv/hp22/ajohnson400/Codes/Scale/SCALE-6.2.1/bin/scaletre

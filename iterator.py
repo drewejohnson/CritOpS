@@ -91,8 +91,8 @@ def itermain():
     while _n < gp.iter_lim:
         _n += 1
         _iter_file = makefile(gp.args.inp_file, _n)
-        utils.vprint('Running SCALE iteration number {}...'.format(_n))
-        subprocess.run([gp.exe_str, _iter_file])
+        utils.vprint('Running SCALE iteration number {}...'.format(_n))	
+        subprocess.call([gp.exe_str, _iter_file])
         utils.vprint('  done')
         stat, _k = parse_scale_out_eig(_iter_file.replace('.inp', '.out'))
         if stat:  # successful operation
