@@ -61,7 +61,7 @@ def update_itervar():
 
     # Assumes only one iteration variable for now
     _var = list(gp.iter_vars.keys())[0]
-    _des = gp.iter_vecs[_var][-1] * gp.k_target / gp.k_vec[-1]
+    _des = gp.iter_vecs[_var][-1] * (gp.k_target / gp.k_vec[-1]) ** 2
     # may square the ratio of k for small convergence
 
     if _des > gp.iter_vars[_var][2]:
@@ -81,9 +81,9 @@ def itermain():
     for _var in gp.iter_vars.keys():
         gp.iter_vecs[_var] = [gp.iter_vars[_var][0], ]
 
-    gp.k_vec.append(gp.k_guess)
+    # gp.k_vec.append(gp.k_guess)
 
-    utils.vprint("Starting the iteration procedure....\n")
+    utils.oprint("Starting the iteration procedure....\n")
 
     conv_flag = False
     conv_type = None
@@ -102,7 +102,6 @@ def itermain():
             utils.error('Could not find value of k-eff for iteration file {0}.inp\n'
                         'Check {0}.out for error message'.format(_iter_file.split('.')[0]),
                         'itermain() of iteration {}'.format(_n))
-            # todo: Parse through output and find cause of error
 
         # check for convergance based on updated eigenvalue, and then a termination based on exceeding the specified
         # input range from the parameter file
@@ -119,5 +118,7 @@ def itermain():
 
     if _n == gp.iter_lim and conv_type is None:
         conv_type = 2
+
+    utils.oprint('  done')
 
     output_landing(conv_type)
