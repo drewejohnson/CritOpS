@@ -91,7 +91,7 @@ def itermain():
     while _n < gp.iter_lim:
         _n += 1
         _iter_file = makefile(gp.args.inp_file, _n)
-        utils.vprint('Running SCALE iteration number {}...'.format(_n))	
+        utils.vprint('Running SCALE iteration number {}...'.format(_n))
         subprocess.call([gp.exe_str, _iter_file])
         utils.vprint('  done')
         stat, _k = parse_scale_out_eig(_iter_file.replace('.inp', '.out'))
@@ -102,7 +102,6 @@ def itermain():
             utils.error('Could not find value of k-eff for iteration file {0}.inp\n'
                         'Check {0}.out for error message'.format(_iter_file.split('.')[0]),
                         'itermain() of iteration {}'.format(_n))
-            # todo: Parse through output and find cause of error
 
         # check for convergance based on updated eigenvalue, and then a termination based on exceeding the specified
         # input range from the parameter file

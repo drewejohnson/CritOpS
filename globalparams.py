@@ -37,7 +37,7 @@ order to obtain a critical system.
 
 [1]: M. D. DeHart, and S. Bowman, "Reactor Physics Methods and Analysis
 \tCapabilities in SCALE," Nuclear Technology, Technical Paper
-vol. 174, no.2, pp. 196-213, 2011.
+\tvol. 174, no.2, pp. 196-213, 2011.
 
 """ + lineBreakLong
 
@@ -66,7 +66,7 @@ k_vec = []
 
 # SCALE parameters
 var_char = '$'
-exe_str = r'C:\SCALE-6.2.1\bin\scalerte'
+exe_str = r'C:\SCALE-6.2.1\bin\scalerte.exe'
 template_file = None
 
 # Outputs
