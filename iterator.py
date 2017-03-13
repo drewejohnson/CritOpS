@@ -61,7 +61,7 @@ def update_itervar():
 
     # Assumes only one iteration variable for now
     _var = list(gp.iter_vars.keys())[0]
-    _des = gp.iter_vecs[_var][-1] * gp.k_target / gp.k_vec[-1]
+    _des = gp.iter_vecs[_var][-1] * (gp.k_target / gp.k_vec[-1]) ** 2
     # may square the ratio of k for small convergence
 
     if _des > gp.iter_vars[_var][2]:
@@ -81,9 +81,9 @@ def itermain():
     for _var in gp.iter_vars.keys():
         gp.iter_vecs[_var] = [gp.iter_vars[_var][0], ]
 
-    gp.k_vec.append(gp.k_guess)
+    # gp.k_vec.append(gp.k_guess)
 
-    utils.vprint("Starting the iteration procedure....\n")
+    utils.oprint("Starting the iteration procedure....\n")
 
     conv_flag = False
     conv_type = None
@@ -91,18 +91,17 @@ def itermain():
     while _n < gp.iter_lim:
         _n += 1
         _iter_file = makefile(gp.args.inp_file, _n)
-        utils.vprint('Running SCALE iteration number {}...'.format(_n))	
+        utils.vprint('Running SCALE iteration number {}...'.format(_n))
         subprocess.call([gp.exe_str, _iter_file])
         utils.vprint('  done')
         stat, _k = parse_scale_out_eig(_iter_file.replace('.inp', '.out'))
         if stat:  # successful operation
-            utils.vprint("  {0:<3}: {1}".format(_n, _k))
+            utils.oprint("  {0:<3}: {1}".format(_n, _k))
             gp.k_vec.append(_k)
         else:
             utils.error('Could not find value of k-eff for iteration file {0}.inp\n'
                         'Check {0}.out for error message'.format(_iter_file.split('.')[0]),
                         'itermain() of iteration {}'.format(_n))
-            # todo: Parse through output and find cause of error
 
         # check for convergance based on updated eigenvalue, and then a termination based on exceeding the specified
         # input range from the parameter file
@@ -119,5 +118,7 @@ def itermain():
 
     if _n == gp.iter_lim and conv_type is None:
         conv_type = 2
+
+    utils.oprint('  done')
 
     output_landing(conv_type)

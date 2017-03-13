@@ -37,7 +37,7 @@ order to obtain a critical system.
 
 [1]: M. D. DeHart, and S. Bowman, "Reactor Physics Methods and Analysis
 \tCapabilities in SCALE," Nuclear Technology, Technical Paper
-vol. 174, no.2, pp. 196-213, 2011.
+\tvol. 174, no.2, pp. 196-213, 2011.
 
 """ + lineBreakLong
 
@@ -55,19 +55,18 @@ supVarChars = ('$',)  # will add more later
 # Iteration parameters
 iter_vars = {}  # syntax: iter_vars['param'] =  [initial_value, minimum_value, maximium_value]
 eps_k = 1E-6
-k_guess = 1.0
 k_target = 1.0
 inf = 1E30
 tiny = 1E-16
 iter_lim = 50
 iter_ints = ('iter_lim',)
-iter_floats = ('eps_k', 'inf', 'tiny', 'k_guess', "k_target")
+iter_floats = ('eps_k', 'inf', 'tiny', "k_target")
 iter_vecs = {}
 k_vec = []
 
 # SCALE parameters
 var_char = '$'
-exe_str = r'C:\SCALE-6.2.1\bin\scalerte'
+exe_str = r'C:\SCALE-6.2.1\bin\scalerte.exe'
 template_file = None
 
 # Outputs
