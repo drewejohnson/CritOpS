@@ -32,8 +32,6 @@ def read_param(_pfile):
     _count = 1
     _locStr = 'read_param() for parameter file {}  - line {}'
 
-    # todo: add option to change exec_string in param_file
-
     while _line != "":
         _lSplit = _line.split()
         if _lSplit[0] == 'iter_var':
@@ -52,6 +50,8 @@ def read_param(_pfile):
             gp.__dict__[_lSplit[0]] = float(_lSplit[1])
         elif _lSplit[0] in gp.iter_ints:
             gp.__dict__[_lSplit[0]] = int(_lSplit[1])
+        elif _lSplit[0] == 'exe_str':
+            gp.exe_str = _lSplit[1]
         _line = _rLine()
         _count += 1
     utils.vprint('  done')
@@ -99,6 +99,8 @@ def check_inputs():
         utils.error('No instances of iteration variable {} found in input file {}'.format(gp.iter_vars.keys(),
                                                                                           gp.args.inp_file.name),
                     'check_inputs()')
+
+    # todo: check to make sure exe_str exists
 
     utils.vprint('  done')
 

@@ -16,18 +16,39 @@ Classes:
 
 import argparse
 
-from utils import show_license
+# Header
+lineBreakLong = "*" * 70 + '\n'
+pName = "CritOpS-NEWT"
+asciiHeader = r"""
+   ______     _ __  ____       _____      _   _________       ________
+  / ____/____(_) /_/ __ \____ / ___/     / | / / ____/ |     / /_  __/
+ / /   / ___/ / __/ / / / __ \\__ \_____/  |/ / __/  | | /| / / / /
+/ /___/ /  / / /_/ /_/ / /_/ /__/ /____/ /|  / /___  | |/ |/ / / /
+\____/_/  /_/\__/\____/ .___/____/    /_/ |_/_____/  |__/|__/ /_/
+                     /_/
+"""  # http://patorjk.com/software/taag/#p=display&f=Slant&t=CritOpS-NEWT
+
+header = lineBreakLong + asciiHeader + pName.center(len(lineBreakLong)) + """
+A Critical Optimization Search tool for NEWT[1]
+A. Johnson
+
+Objective: Iteratively update a parameter in a template NEWT file in
+order to obtain a critical system.
+
+[1]: M. D. DeHart, and S. Bowman, "Reactor Physics Methods and Analysis
+\tCapabilities in SCALE," Nuclear Technology, Technical Paper
+vol. 174, no.2, pp. 196-213, 2011.
+
+""" + lineBreakLong
 
 # Input parameters
-parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+parser = argparse.ArgumentParser(description=header, formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument('inp_file', type=argparse.FileType('r'), help='template SCALE input file')
 parser.add_argument('param_file', type=argparse.FileType('r'),
                     help='file containing parameters for operation')
 parser.add_argument('-v', '--verbose', help='reveal more of the mystery behind the operation',
                     action='store_true')
-parser.add_argument('-l', '--license', help='show license information', type=show_license)
-# todo: make the -l command work without input files
-# todo: Add formattable execution statement i.e. -x "C:\SCALE-6.2.1\bin\scalerte {} > z{}.out"
+parser.add_argument('-o', '--output', help="write status to output file", type=str)
 args = None
 supVarChars = ('$',)  # will add more later
 
@@ -48,3 +69,5 @@ k_vec = []
 var_char = '$'
 exe_str = r'C:\SCALE-6.2.1\bin\scalerte'
 template_file = None
+
+# Outputs
