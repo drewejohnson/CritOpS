@@ -14,6 +14,7 @@ Functions:
 Classes:
 
 """
+import pandas as pd
 import globalparams as gp
 import utils
 
@@ -64,5 +65,7 @@ def output_landing(_out_type):
                         list(gp.iter_vars.keys())[0], gp.iter_vars[list(gp.iter_vars.keys())[0]][2], ),
                     2: "Terminated due to exceeding the iteration limit {}".format(gp.iter_lim)
                     }
-    print('End of operation. Status: {}'.format(out_messages[_out_type]))
-
+    utils.oprint('End of operation. Status: {}'.format(out_messages[_out_type]))
+    var_df = pd.DataFrame({_var: gp.iter_vecs[_var] for _var in gp.iter_vars})
+    var_df['k-eff'] = gp.k_vec
+    utils.oprint(var_df.to_string())

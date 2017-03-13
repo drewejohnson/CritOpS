@@ -81,9 +81,9 @@ def itermain():
     for _var in gp.iter_vars.keys():
         gp.iter_vecs[_var] = [gp.iter_vars[_var][0], ]
 
-    gp.k_vec.append(gp.k_guess)
+    # gp.k_vec.append(gp.k_guess)
 
-    print("Starting the iteration procedure....\n")
+    utils.oprint("Starting the iteration procedure....\n")
 
     conv_flag = False
     conv_type = None
@@ -96,7 +96,7 @@ def itermain():
         utils.vprint('  done')
         stat, _k = parse_scale_out_eig(_iter_file.replace('.inp', '.out'))
         if stat:  # successful operation
-            print("  {0:<3}: {1}".format(_n, _k))
+            utils.oprint("  {0:<3}: {1}".format(_n, _k))
             gp.k_vec.append(_k)
         else:
             utils.error('Could not find value of k-eff for iteration file {0}.inp\n'
@@ -120,6 +120,6 @@ def itermain():
     if _n == gp.iter_lim and conv_type is None:
         conv_type = 2
 
-    print('  done')
+    utils.oprint('  done')
 
     output_landing(conv_type)
