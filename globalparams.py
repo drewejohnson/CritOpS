@@ -55,13 +55,12 @@ supVarChars = ('$',)  # will add more later
 # Iteration parameters
 iter_vars = {}  # syntax: iter_vars['param'] =  [initial_value, minimum_value, maximium_value]
 eps_k = 1E-6
-k_guess = 1.0
 k_target = 1.0
 inf = 1E30
 tiny = 1E-16
 iter_lim = 50
 iter_ints = ('iter_lim',)
-iter_floats = ('eps_k', 'inf', 'tiny', 'k_guess', "k_target")
+iter_floats = ('eps_k', 'inf', 'tiny', "k_target")
 iter_vecs = {}
 k_vec = []
 
