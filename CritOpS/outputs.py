@@ -15,8 +15,9 @@ Classes:
 
 """
 import pandas as pd
-import globalparams as gp
-import utils
+import CritOpS.utils as utils
+
+from CritOpS import globalparams as gp
 
 
 def parse_scale_out_eig(_ofile):

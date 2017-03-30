@@ -17,8 +17,10 @@ Classes:
 
 """
 import os.path
-import globalparams as gp
-import utils
+
+import CritOpS.utils as utils
+
+from CritOpS import globalparams as gp
 
 
 def read_param(_pfile):

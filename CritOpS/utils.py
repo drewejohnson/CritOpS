@@ -16,7 +16,7 @@ Functions:
 Classes:
 
 """
-import globalparams as gp
+import CritOpS.globalparams as gp
 
 lineBreakShort = '-' * 10 + '\n'
 

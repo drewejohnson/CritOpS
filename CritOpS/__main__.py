@@ -13,9 +13,14 @@ Functions:
 Classes:
 
 """
-import globalparams as gp
-from iterator import itermain
-from readinputs import readmain
+import sys
+
+import CritOpS.globalparams as gp
+from CritOpS.readinputs import readmain
+from CritOpS.iterator import itermain
+
+if sys.version_info[0] < 3:
+    raise SystemError('Need python 3 >')
 
 gp.args = gp.parser.parse_args()
 if gp.args.output is None:
