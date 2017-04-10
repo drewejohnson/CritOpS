@@ -1,36 +1,71 @@
 """
+   ______     _ __  ____       _____      _   _________       ________
+  / ____/____(_) /_/ __ \____ / ___/     / | / / ____/ |     / /_  __/
+ / /   / ___/ / __/ / / / __ \\__ \_____/  |/ / __/  | | /| / / / /
+/ /___/ /  / / /_/ /_/ / /_/ /__/ /____/ /|  / /___  | |/ |/ / / /
+\____/_/  /_/\__/\____/ .___/____/    /_/ |_/_____/  |__/|__/ /_/
+                     /_/
 
-NRE6401 - Molten Salt Reactor
-msr-refl-iter
+
+                        CritOpS
+A Critical Optimization Search tool for NEWT[1]
 A. Johnson
 
-refl_iter
+Objective: Iteratively update a parameter in a template NEWT file in
+order to obtain a critical system.
 
-Objective: Main file for reading the input, and driving control of the operation
-
-Functions:
-
-Classes:
-
+[1]: M. D. DeHart, and S. Bowman, "Reactor Physics Methods and Analysis
+    Capabilities in SCALE," Nuclear Technology, Technical Paper
+    vol. 174, no.2, pp. 196-213, 2011.
 """
+
+import argparse
+import os
 import sys
 
-import CritOpS.globalparams as gp
-from CritOpS.readinputs import readmain
+from CritOpS import utils
+from CritOpS.constants import header, default_params
 from CritOpS.iterator import itermain
+from CritOpS.outputs import output_landing
+from CritOpS.readinputs import readmain
 
-if sys.version_info[0] < 3:
-    raise SystemError('Need python 3 >')
+# Input parameters
+parser = argparse.ArgumentParser(description=header, formatter_class=argparse.RawDescriptionHelpFormatter)
+parser.add_argument('inp_file', type=str, help='template SCALE input file')
+parser.add_argument('param_file', type=str, help='file containing parameters for operation')
+parser.add_argument('-v', '--verbose', help='reveal more of the mystery behind the operation', action='store_true')
+parser.add_argument('-o', '--output', help="write status to output file", type=str)
 
-gp.args = gp.parser.parse_args()
-if gp.args.output is None:
-    print(gp.header)
-else:
-    with open(gp.args.output, 'w') as outobj:
-        outobj.write(gp.header)
+if __name__ == '__main__':
 
-# Read the input files
-readmain()
+    if int(sys.version_info[0]) < 3:
+        raise SystemError('Need python 3 >')
 
-# Start the iteration
-itermain()
+    kwargs = {}
+    for key in default_params:
+        kwargs[key] = default_params[key]
+
+    args = vars(parser.parse_args())
+    kwargs['verbose'] = args.pop('verbose')
+    kwargs['output'] = args.pop('output')
+
+    if kwargs['output'] is None:
+        print(header)
+    else:
+        with open(kwargs['output'], 'w') as outobj:
+            outobj.write(header)
+
+    # Update files to be absolute references
+    for file in ('inp_file', 'param_file'):
+        args[file] = os.path.join(os.getcwd(), args[file])
+        if not os.path.exists(args[file]):
+            utils.error('File {} does not exist'.format(args[file]), 'CritOps __main__', args)
+
+    # Read the input files
+    template, iter_vars = readmain(args['inp_file'], args['param_file'], kwargs)
+
+    # Start the iteration
+    iter_vecs, k_vec, conv_type = itermain(template, args['inp_file'], iter_vars, kwargs)
+
+    # Output
+    output_landing(iter_vecs, k_vec, conv_type, **kwargs)

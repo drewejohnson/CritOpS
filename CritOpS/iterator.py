@@ -1,7 +1,7 @@
 """
 
 NRE6401 - Molten Salt Reactor
-msr-refl-iter
+CritOpS
 A. Johnson
 
 iterator
@@ -16,41 +16,42 @@ Classes:
 """
 import subprocess
 
-import CritOpS.globalparams as gp
 import CritOpS.utils as utils
-from CritOpS.outputs import parse_scale_out_eig, output_landing
 
 
-def makefile(_tfile, _iter):
+def makefile(_tfile: (list, tuple), _name: str, _iter: int, _varchar: str, _vars: dict):
     """
     Write the new output file using the value from iteration _iter
     :param _tfile: Template output file with variables to be replaced
+    :param _name: Name of original file
     :param _iter: Iteration number
+    :param _varchar: Variable character to update with new_val
+    :param _vars: Dictionary with iteration variables as keys and their new values as keys
+        i.e. {del_z: 10.21, del_r: 3.4}
     :return: Name of input file
     """
-    _ofile = _tfile.name[:_tfile.name.rfind('.')] + "_" + str(_iter).zfill(len(str(gp.iter_lim))) + ".inp"
+    _ofile = _name[:_name.rfind('.')] + "_" + str(_iter) + ".inp"
 
     with open(_ofile, 'w') as _outObj:
-        for _line in gp.template_file:
-            if gp.var_char not in _line:
+        for _line in _tfile:
+            if _varchar not in _line:
                 _outObj.write(_line)
             else:
-                _var = _line[_line.index(gp.var_char):].split()[0][1:]
+                _var = _line[_line.index(_varchar):].split()[0][1:]
                 # assumes that iteration variable will be followed by a space
-                _outObj.write(_line.replace(gp.var_char + _var, "{:7.5f}".format(gp.iter_vecs[_var][-1])))
+                _outObj.write(_line.replace(_varchar + _var, "{:7.5f}".format(_vars[_var])))
 
     return _ofile
 
 
-def update_itervar():
-    """
-    Simple function to adjust the updating of the iteration variables
-
-    Operates according to the following logic:
-    An increase in a reflector parameter (thickness) will introduce more reflectance, increasing the eigenvalue
-    Therefore, if the current eigenvalue is larger than the desired value, decrease the reflector thickness
-    z_{n+1} = z_n \frac{k_{target}}{k_n}
-
+def update_itervar(iter_vars: dict, iter_vec: dict, kcur: float, ktarg: float):
+    """Simple function to update the iteration variables.
+    Currently set up for a positive feedback on the variables.
+    I.e. increasing each iteration variable will increase k
+    :param iter_vars: Dictionary of iteration variables and their minima/maxima
+    :param iter_vec: Dictionary of iteration variables and their values through the iteratio procedure
+    :param kcur: Current eigenvalue
+    :param ktarg: Target eigenvalue
     :return: status
         status = 0 if the updated value is inside the intended range
         status = 1 if the desired updated value is greater than the specified maximum of the parameter
@@ -60,55 +61,95 @@ def update_itervar():
     """
 
     # Assumes only one iteration variable for now
-    _var = list(gp.iter_vars.keys())[0]
-    _des = gp.iter_vecs[_var][-1] * (gp.k_target / gp.k_vec[-1]) ** 2
-    # may square the ratio of k for small convergence
+    _var = list(iter_vars.keys())[0]
+    _des = iter_vec[_var][-1] * (ktarg / kcur) ** 2
 
-    if _des > gp.iter_vars[_var][2]:
-        gp.iter_vecs[_var].append(gp.iter_vars[_var][2])
+    if _des > iter_vars[_var][2]:
+        iter_vec[_var].append(iter_vars[_var][2])
         return 1
-    elif _des < gp.iter_vars[_var][1]:
-        gp.iter_vecs[_var].append(gp.iter_vars[_var][1])
+    elif _des < iter_vars[_var][1]:
+        iter_vec[_var].append(iter_vars[_var][1])
         return -1
     else:
-        gp.iter_vecs[_var].append(_des)
+        iter_vec[_var].append(_des)
         return 0
 
 
-def itermain():
-    """Main function for controlling the iteration"""
+def parse_scale_out_eig(_ofile: str, **kwargs):
+    """
+    Read through the SCALE output file specified by _ofile and return status and eigenvalue (if present)
+    :param _ofile: SCALE .out file
+    :return: Status, eigenvalue
+        status = True if output file exists and eigenvalue was extracted
+        status = False if output file exists but no eigenvalue was found (possible error in input file syntax)
+        exit operation if no output file found
+    """
+    try:
+        open(_ofile, 'r').close()
+    except IOError:
+        utils.error("SCALE output file {} not found".format(_ofile), 'parse_scale_out_eig()', **kwargs)
 
-    for _var in gp.iter_vars.keys():
-        gp.iter_vecs[_var] = [gp.iter_vars[_var][0], ]
+    _rK = None
+    _stat = False
+    utils.vprint('\n Parsing output file {}'.format(_ofile), **kwargs)
+    with open(_ofile, 'r') as _outObj:
+        _line = _outObj.readline()
+        while _line != "":
+            if "k-eff = " in _line:
+                _rK = float(_line.split()[-1])
+                _stat = True
+                break
+            _line = _outObj.readline()
+    utils.vprint('  done', **kwargs)
+    return _stat, _rK
 
-    # gp.k_vec.append(gp.k_guess)
 
-    utils.oprint("Starting the iteration procedure....\n")
+def itermain(tmp_list: (list, tuple), file_name: str, iter_vars: dict, kwargs: dict):
+    """Main function for controlling the iteration
+    :param tmp_list: List of lines from template file
+    :param file_name: Name of template file
+    :param iter_vars: Dictionary of iteration variables and their starting, minima, and maximum values
+    :param kwargs: Additional keyword arguments
+    :return: k_vec: List of progression of eigenvalue through iteration procedure
+    :return: iter_vecs: Dictionary of iteration and their values through iteration procedure
+    """
+    # Make sure all the required keywords are present. If not, set to defaults from constants.py
+    utils.check_defaults(kwargs)
+
+    iter_vecs = {}
+
+    for _var in iter_vars:
+        iter_vecs[_var] = [iter_vars[_var][0], ]
+
+    utils.oprint("Starting the iteration procedure....\n", **kwargs)
 
     conv_flag = False
     conv_type = None
     _n = 0
-    while _n < gp.iter_lim:
+    k_vec = []
+
+    while _n < kwargs['iter_lim']:
         _n += 1
-        _iter_file = makefile(gp.args.inp_file, _n)
-        utils.vprint('Running SCALE iteration number {}...'.format(_n))
-        subprocess.call([gp.exe_str, _iter_file])
-        utils.vprint('  done')
-        stat, _k = parse_scale_out_eig(_iter_file.replace('.inp', '.out'))
+        _iterfile = makefile(tmp_list, file_name, _n, kwargs['var_char'],
+                             {_var: iter_vecs[_var][-1] for _var in iter_vars})
+        utils.vprint('Running SCALE iteration number {}...'.format(_n), **kwargs)
+        subprocess.call([kwargs['exe_str'], _iterfile])
+        utils.vprint('  done', **kwargs)
+        stat, _k = parse_scale_out_eig(_iterfile.replace('.inp', '.out'), **kwargs)
         if stat:  # successful operation
-            utils.oprint("  {0:<3}: {1}".format(_n, _k))
-            gp.k_vec.append(_k)
+            utils.oprint("  {0:<3}: {1}".format(_n, _k), **kwargs)
+            k_vec.insert(_n - 1, _k)
         else:
             utils.error('Could not find value of k-eff for iteration file {0}.inp\n'
-                        'Check {0}.out for error message'.format(_iter_file.split('.')[0]),
-                        'itermain() of iteration {}'.format(_n))
+                        'Check {0}.out for error message'.format(file_name),
+                        'itermain() of iteration {}'.format(_n), **kwargs)
 
         # check for convergance based on updated eigenvalue, and then a termination based on exceeding the specified
         # input range from the parameter file
-        if abs(_k - gp.k_target) < gp.eps_k:
+        if abs(_k - kwargs['k_target']) < kwargs['eps_k']:
             conv_type = 0
             break
-        stat = update_itervar()
+        stat = update_itervar(iter_vars, iter_vecs, _k, kwargs['k_target'])
         if stat == 0:
             conv_flag = False
         else:
@@ -116,9 +157,8 @@ def itermain():
             if conv_flag:
                 break
 
-    if _n == gp.iter_lim and conv_type is None:
+    if _n == kwargs['iter_lim'] and conv_type is None:
         conv_type = 2
 
-    utils.oprint('  done')
-
-    output_landing(conv_type)
+    utils.oprint('  done', **kwargs)
+    return iter_vecs, k_vec, conv_type

@@ -1,7 +1,7 @@
 """
 
 NRE6401 - Molten Salt Reactor
-msr-refl-iter
+CritOps
 A. Johnson
 
 readinputs
@@ -13,107 +13,122 @@ Functions:
     read_param: Read the parameter file and update values in globalparams
     readMain: Main driver for reading and processing the input files
 
-Classes:
-
 """
 import os.path
 
 import CritOpS.utils as utils
+from CritOpS import constants
 
-from CritOpS import globalparams as gp
+iter_ints = ('iter_lim',)
+iter_floats = ('eps_k', 'inf', 'tiny', "k_target")
 
 
-def read_param(_pfile):
+def read_param(_pfile, **kwargs):
     """
     Read the parameter file and update values in globalparams
     :param _pfile: Parameter file
-    :return: None
+    :return: iter_vars: Dictionary of iteration variables and their starting, minima, and maximum values
     """
-    utils.vprint('Reading from parameter file {}'.format(_pfile.name))
-    _rLine = _pfile.readline
-    _line = _rLine()
-    _count = 1
-    _locStr = 'read_param() for parameter file {}  - line {}'
 
-    while _line != "":
-        _lSplit = _line.split()
-        if _lSplit[0] == 'iter_var':
-            if len(_lSplit) == 5:
-                gp.iter_vars[_lSplit[1]] = [float(_v) for _v in _lSplit[2:]]
-            else:
-                utils.error('Need starting, minimum, and maximum value for parameter {}'.format(_lSplit[1]),
-                            _locStr.format(_pfile.name, _count))
-        elif _lSplit[0] == 'var_char':
-            if _lSplit[1] in gp.supVarChars:
-                gp.var_char = _lSplit[1]
-            else:
-                utils.error('Variable character {} not supported at this moment.'.format(_lSplit[1]),
-                            _locStr.format(_pfile.name, _count))
-        elif _lSplit[0] in gp.iter_floats:
-            gp.__dict__[_lSplit[0]] = float(_lSplit[1])
-        elif _lSplit[0] in gp.iter_ints:
-            gp.__dict__[_lSplit[0]] = int(_lSplit[1])
-        elif _lSplit[0] == 'exe_str':
-            gp.exe_str = _lSplit[1]
-        _line = _rLine()
-        _count += 1
-    utils.vprint('  done')
+    iter_vars = {}
+
+    utils.vprint('Reading from parameter file {}'.format(_pfile), **kwargs)
+    with open(_pfile, 'r') as pobj:
+        _line = pobj.readline()
+        _count = 1
+        _locStr = 'read_param() for parameter file {}  - line {}'
+
+        while _line != "":
+            _lSplit = _line.split()
+            if _lSplit[0] == 'iter_var':
+                if len(_lSplit) == 5:
+                    iter_vars[_lSplit[1]] = [float(_v) for _v in _lSplit[2:]]
+                else:
+                    utils.error('Need starting, minimum, and maximum value for parameter {}'.format(_lSplit[1]),
+                                _locStr.format(_pfile.name, _count), **kwargs)
+            elif _lSplit[0] == 'var_char':
+                if _lSplit[1] in constants.supVarChars:
+                    kwargs['var_char'] = _lSplit[1]
+                else:
+                    utils.error('Variable character {} not supported at this moment.'.format(_lSplit[1]),
+                                _locStr.format(_pfile.name, _count), **kwargs)
+            elif _lSplit[0] in iter_floats:
+                kwargs[_lSplit[0]] = float(_lSplit[1])
+            elif _lSplit[0] in iter_ints:
+                kwargs[_lSplit[0]] = int(_lSplit[1])
+            elif _lSplit[0] == 'exe_str':
+                kwargs['exe_str'] = _lSplit[1]
+            _line = pobj.readline()
+            _count += 1
+    utils.vprint('  done', **kwargs)
+    return iter_vars
 
 
-def check_inputs():
+def check_inputs(temp_lines: list, iter_vars: dict, **kwargs):
     """Run over the inputs and make sure things are good for operation"""
-    utils.vprint('Checking run parameters')
-    for _int in gp.iter_ints:
+    utils.vprint('Checking run parameters', **kwargs)
+    for _int in iter_ints:
         try:
-            assert gp.__dict__[_int] % 1 == 0
+            assert kwargs[_int] % 1 == 0
         except AssertionError:
-            utils.error('Variable {} must be integer, not {}'.format(_int, gp.__dict__[_int]),
-                        'check_inputs()')
+            utils.error('Variable {} must be integer, not {}'.format(_int, kwargs[_int]),
+                        'check_inputs()', **kwargs)
         try:
-            assert gp.__dict__[_int] > 0
+            assert kwargs[_int] > 0
         except AssertionError:
-            utils.error('Variable {} must be positive, not {}'.format(_int, gp.__dict__[_int]),
-                        'check_inputs()')
-    for _flt in gp.iter_floats:
+            utils.error('Variable {} must be positive, not {}'.format(_int, kwargs[_int]),
+                        'check_inputs()', **kwargs)
+    for _flt in iter_floats:
         try:
-            assert gp.__dict__[_flt] > 0
+            assert kwargs[_flt] > 0
         except AssertionError:
-            utils.error('Variable {} must be positive, not {}'.format(_flt, gp.__dict__[_flt]),
-                        'check_inputs()')
+            utils.error('Variable {} must be positive, not {}'.format(_flt, kwargs[_flt]),
+                        'check_inputs()', **kwargs)
 
-    if len(gp.iter_vars) > 1:
+    if len(iter_vars) > 1:
         utils.error('Only one value can be modified as iter_var at this moment. Variables indicated:\n' +
-                    "\n".join(gp.iter_vars.keys()), "check_inputs()")
-    elif len(gp.iter_vars) == 0:
+                    "\n".join(iter_vars.keys()), "check_inputs()", **kwargs)
+    elif len(iter_vars) == 0:
         utils.error('No iteration variable to update. Use the following syntax in input file:\n'
-                    'iter_var var start min max', 'check_inputs()')
+                    'iter_var <var> <start> <min> <max>', 'check_inputs()', **kwargs)
 
     l_count = 1
     _instance_count = 0
-    for _line in gp.template_file:
-        if gp.var_char in _line:
-            if _line.split(gp.var_char)[1].split()[0] in gp.iter_vars:
+    for _line in temp_lines:
+        if kwargs['var_char'] in _line:
+            if _line.split(kwargs['var_char'])[1].split()[0] in iter_vars:
                 _instance_count += 1
                 utils.vprint('  {} at line {} in input file'.
-                             format(_line.split(gp.var_char)[1].split()[0], l_count))
+                             format(_line.split(kwargs['var_char'])[1].split()[0], l_count), **kwargs)
         l_count += 1
 
     if _instance_count == 0:
-        utils.error('No instances of iteration variable {} found in input file {}'.format(gp.iter_vars.keys(),
-                                                                                          gp.args.inp_file.name),
-                    'check_inputs()')
+        utils.error('No instances of iteration variables {} found in input file'.format(', '.join(iter_vars.keys())),
+                    'check_inputs()', **kwargs)
 
-    if not os.path.isfile(gp.exe_str):
-        utils.error('Execution file {} does not exist'.format(gp.exe_str), 'check_inputs()')
+    if not os.path.isfile(kwargs['exe_str']):
+        utils.error('Execution file {} does not exist'.format(kwargs['exe_str']), 'check_inputs()', **kwargs)
 
-    utils.vprint('  done')
+    utils.vprint('  done', **kwargs)
 
 
-def readmain():
-    """Main driver for reading and processing input files"""
-    utils.vprint('Reading from input file {}'.format(gp.args.inp_file.name))
-    gp.template_file = gp.args.inp_file.readlines()
-    utils.vprint('  done')
-    gp.args.inp_file.close()
-    read_param(gp.args.param_file)
-    check_inputs()
+def readmain(tmp_file, param_file, kwargs: dict):
+    """Main driver for reading and processing input files.    
+    :param tmp_file: Template input file
+    :param param_file: Parameter file
+    :param kwargs: Additional arguments
+        - verbose (True) - status updates
+        - output (None) - print to screen
+        Plus additional iteration parameters
+    :return List of valid template file lines and dictionary of interation variables
+        Updates kwargs based on values in param_file
+    """
+    utils.check_defaults(kwargs)
+    utils.vprint('Reading from input file {}'.format(tmp_file), **kwargs)
+    with open(tmp_file, 'r') as file:
+        tmp_lines = file.readlines()
+    utils.vprint('  done', **kwargs)
+    iter_vars = read_param(param_file, **kwargs)
+    check_inputs(tmp_lines, iter_vars, **kwargs)
+
+    return tmp_lines, iter_vars
