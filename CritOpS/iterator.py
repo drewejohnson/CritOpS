@@ -16,9 +16,9 @@ Classes:
 """
 import subprocess
 
-import globalparams as gp
-import utils
-from outputs import parse_scale_out_eig, output_landing
+import CritOpS.globalparams as gp
+import CritOpS.utils as utils
+from CritOpS.outputs import parse_scale_out_eig, output_landing
 
 
 def makefile(_tfile, _iter):
