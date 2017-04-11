@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>readinputs &#8212; CritOpS 2.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="outputs" href="outputs.html" />
+    <link rel="prev" title="iterator" href="iterator.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-critops.readinputs">
+<span id="readinputs"></span><h1>readinputs<a class="headerlink" href="#module-critops.readinputs" title="Permalink to this headline">¶</a></h1>
+<p>NRE6401 - Molten Salt Reactor</p>
+<p>CritOps</p>
+<ol class="upperalpha simple">
+<li>Johnson</li>
+</ol>
+<p>Objective: Read the inputs, update global variables, and check for proper variable usage</p>
+<dl class="docutils">
+<dt>Functions:</dt>
+<dd>check_inputs: make sure values in global_parameters are good for running
+read_param: Read the parameter file and update values in globalparams
+readmain: Main driver for reading and processing the input files</dd>
+</dl>
+<dl class="function">
+<dt id="critops.readinputs.readmain">
+<code class="descclassname">critops.readinputs.</code><code class="descname">readmain</code><span class="sig-paren">(</span><em>tmp_file</em>, <em>param_file</em>, <em>kwargs: dict</em><span class="sig-paren">)</span><a class="headerlink" href="#critops.readinputs.readmain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main driver for reading and processing input files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tmp_file</strong> &#8211; Template input file</li>
+<li><strong>param_file</strong> &#8211; Parameter file</li>
+<li><strong>kwargs</strong> &#8211; Additional arguments
+- verbose (True) - status updates
+- output (None) - print to screen
+- Plus additional iteration parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of valid template file lines and dictionary of interation variables
+Updates kwargs based on values in param_file</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="critops.readinputs.read_param">
+<code class="descclassname">critops.readinputs.</code><code class="descname">read_param</code><span class="sig-paren">(</span><em>_pfile</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#critops.readinputs.read_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the parameter file and update values in kwargs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>_pfile</strong> &#8211; Parameter file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">iter_vars: Dictionary of iteration variables and their starting, minima, and maximum values</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="critops.readinputs.check_inputs">
+<code class="descclassname">critops.readinputs.</code><code class="descname">check_inputs</code><span class="sig-paren">(</span><em>temp_lines: list</em>, <em>iter_vars: dict</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#critops.readinputs.check_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run over the inputs and make sure things are good for operation</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="iterator.html" title="previous chapter">iterator</a></li>
+      <li>Next: <a href="outputs.html" title="next chapter">outputs</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/readinputs.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Andrew Johnson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/readinputs.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

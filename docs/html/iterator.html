@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>iterator &#8212; CritOpS 2.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="readinputs" href="readinputs.html" />
+    <link rel="prev" title="Intro" href="intro.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-critops.iterator">
+<span id="iterator"></span><h1>iterator<a class="headerlink" href="#module-critops.iterator" title="Permalink to this headline">¶</a></h1>
+<p>NRE6401 - Molten Salt Reactor</p>
+<p>CritOpS</p>
+<ol class="upperalpha simple">
+<li>Johnson</li>
+</ol>
+<p>Objective: Main file for controlling the iteration scheme</p>
+<dl class="docutils">
+<dt>Functions:</dt>
+<dd>iter_main: Landing function that drives the iteration
+makefile: Write the new output file using the value from iteration _iter
+update_itervar: Simple function to update the iteration variables.    
+parse_scale_out_eig: Read through the SCALE output file specified by _ofile and return status and eigenvalue (if present)</dd>
+</dl>
+<dl class="function">
+<dt id="critops.iterator.itermain">
+<code class="descclassname">critops.iterator.</code><code class="descname">itermain</code><span class="sig-paren">(</span><em>tmp_list: (&lt;class 'list'&gt;</em>, <em>&lt;class 'tuple'&gt;)</em>, <em>file_name: str</em>, <em>iter_vars: dict</em>, <em>kwargs: dict</em><span class="sig-paren">)</span><a class="headerlink" href="#critops.iterator.itermain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main function for controlling the iteration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tmp_list</strong> &#8211; List of lines from template file</li>
+<li><strong>file_name</strong> &#8211; Name of template file</li>
+<li><strong>iter_vars</strong> &#8211; Dictionary of iteration variables and their starting, minima, and maximum values</li>
+<li><strong>kwargs</strong> &#8211; Additional keyword arguments</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">k_vec: List of progression of eigenvalue through iteration procedure</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">iter_vecs: Dictionary of iteration and their values through iteration procedure</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p>conv_type - reason for exiting iter_main</p>
+<p>0: Accurately converged to target eigenvalue in specified iterations</p>
+<p>1: iter_var exceeded specified maximum twice</p>
+<p>-1: iter_var exceeded specified minimum twice</p>
+<p>2: Reached iteration limit without reaching target eigenvalue</p>
+<p>-2: Previous two k are close to similar</p>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="critops.iterator.update_itervar">
+<code class="descclassname">critops.iterator.</code><code class="descname">update_itervar</code><span class="sig-paren">(</span><em>iter_vars: dict</em>, <em>iter_vec: dict</em>, <em>kvec: (&lt;class 'list'&gt;</em>, <em>&lt;class 'tuple'&gt;)</em>, <em>ktarg: float</em><span class="sig-paren">)</span><a class="headerlink" href="#critops.iterator.update_itervar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple function to update the iteration variables.
+Currently set up for a positive feedback on the variables.
+I.e. increasing each iteration variable will increase k</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>iter_vars</strong> &#8211; Dictionary of iteration variables and their minima/maxima</li>
+<li><strong>iter_vec</strong> &#8211; Dictionary of iteration variables and their values through the iteratio procedure</li>
+<li><strong>kvec</strong> &#8211; Vector of eigenvalues</li>
+<li><strong>ktarg</strong> &#8211; Target eigenvalue</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">status
+status = 0 if the updated value is inside the intended range
+status = 1 if the desired updated value is greater than the specified maximum of the parameter
+and the max value is used as the updated value
+status = -1 if the desired updated value is less than the specified maximum of the parameter
+and the minimum value is used as the updated value</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="critops.iterator.parse_scale_out_eig">
+<code class="descclassname">critops.iterator.</code><code class="descname">parse_scale_out_eig</code><span class="sig-paren">(</span><em>_ofile: str</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#critops.iterator.parse_scale_out_eig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read through the SCALE output file specified by _ofile and return status and eigenvalue (if present)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>_ofile</strong> &#8211; SCALE .out file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Status, eigenvalue<p>status = True if output file exists and eigenvalue was extracted
+status = False if output file exists but no eigenvalue was found (possible error in input file syntax)
+exit operation if no output file found</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="intro.html" title="previous chapter">Intro</a></li>
+      <li>Next: <a href="readinputs.html" title="next chapter">readinputs</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/iterator.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Andrew Johnson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/iterator.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

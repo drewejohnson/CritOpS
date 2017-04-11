@@ -1,16 +1,15 @@
 """
 
 NRE6401 - Molten Salt Reactor
-CritOpS
-A. Johnson
 
-outputs
+CritOpS
+
+A. Johnson
 
 Objective: Functions for reading SCALE output files and writing output files
 
 Functions:
     parse_scale_output: Parse through the SCALE output file and return status
-
 
 """
 import pandas as pd
@@ -21,13 +20,16 @@ import critops.utils as utils
 def output_landing(iter_vecs: dict, k_vec: (list, tuple), _outtype: int, **kwargs):
     """
     Write the output file according to the type of output
+    
     :param iter_vecs: Dictionary with iteration variables and their values through the procedure
     :param k_vec: Vector of eigenvalues
     :param _outtype: Flag indicating the reason the program terminated
-        0: Nothing went wrong
-        1: Desired update value for iteration parameter twice exceeded the maximum value from the parameter file
-       -1: Desired update value for iteration parameter twice exceeded the minimum value from the parameter file
-        2: Exceeded the total number of iterations allotted
+        - 0 Nothing went wrong
+        - 1 Desired update value for iteration parameter twice exceeded the maximum value from the parameter file
+        - -1 Desired update value for iteration parameter twice exceeded the minimum value from the parameter file
+        - 2 Exceeded the total number of iterations allotted
+        - -2 No excessive change in eigenvalue
+    
     :return:
     """
     utils.check_defaults(kwargs)

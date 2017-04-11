@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>outputs &#8212; CritOpS 2.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="readinputs" href="readinputs.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-critops.outputs">
+<span id="outputs"></span><h1>outputs<a class="headerlink" href="#module-critops.outputs" title="Permalink to this headline">¶</a></h1>
+<p>NRE6401 - Molten Salt Reactor</p>
+<p>CritOpS</p>
+<ol class="upperalpha simple">
+<li>Johnson</li>
+</ol>
+<p>Objective: Functions for reading SCALE output files and writing output files</p>
+<dl class="docutils">
+<dt>Functions:</dt>
+<dd>parse_scale_output: Parse through the SCALE output file and return status</dd>
+</dl>
+<dl class="function">
+<dt id="critops.outputs.output_landing">
+<code class="descclassname">critops.outputs.</code><code class="descname">output_landing</code><span class="sig-paren">(</span><em>iter_vecs: dict</em>, <em>k_vec: (&lt;class 'list'&gt;</em>, <em>&lt;class 'tuple'&gt;)</em>, <em>_outtype: int</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#critops.outputs.output_landing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the output file according to the type of output</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>iter_vecs</strong> &#8211; Dictionary with iteration variables and their values through the procedure</li>
+<li><strong>k_vec</strong> &#8211; Vector of eigenvalues</li>
+<li><strong>_outtype</strong> &#8211; Flag indicating the reason the program terminated
+- 0 Nothing went wrong
+- 1 Desired update value for iteration parameter twice exceeded the maximum value from the parameter file
+- -1 Desired update value for iteration parameter twice exceeded the minimum value from the parameter file
+- 2 Exceeded the total number of iterations allotted
+- -2 No excessive change in eigenvalue</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="readinputs.html" title="previous chapter">readinputs</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/outputs.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Andrew Johnson.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/outputs.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,17 +1,18 @@
 """
 
 NRE6401 - Molten Salt Reactor
+
 CritOps
+
 A. Johnson
 
-readinputs
 
 Objective: Read the inputs, update global variables, and check for proper variable usage
 
 Functions:
     check_inputs: make sure values in global_parameters are good for running
     read_param: Read the parameter file and update values in globalparams
-    readMain: Main driver for reading and processing the input files
+    readmain: Main driver for reading and processing the input files
 
 """
 import os.path
@@ -25,8 +26,10 @@ iter_floats = ('eps_k', 'inf', 'tiny', "k_target")
 
 def read_param(_pfile, **kwargs):
     """
-    Read the parameter file and update values in globalparams
+    Read the parameter file and update values in kwargs
+    
     :param _pfile: Parameter file
+    
     :return: iter_vars: Dictionary of iteration variables and their starting, minima, and maximum values
     """
 
@@ -115,13 +118,15 @@ def check_inputs(temp_lines: list, iter_vars: dict, **kwargs):
 
 def readmain(tmp_file, param_file, kwargs: dict):
     """Main driver for reading and processing input files.    
+    
     :param tmp_file: Template input file
     :param param_file: Parameter file
     :param kwargs: Additional arguments
         - verbose (True) - status updates
         - output (None) - print to screen
-        Plus additional iteration parameters
-    :return List of valid template file lines and dictionary of interation variables
+        - Plus additional iteration parameters
+    
+    :return: List of valid template file lines and dictionary of interation variables
         Updates kwargs based on values in param_file
     """
     utils.check_defaults(kwargs)
