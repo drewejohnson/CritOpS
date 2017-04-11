@@ -18,7 +18,7 @@ Functions:
 Classes:
 
 """
-from CritOpS.constants import lineBreakShort, default_params
+from critops.constants import lineBreakShort, default_params
 
 
 def check_defaults(params: dict):

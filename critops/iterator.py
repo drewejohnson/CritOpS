@@ -16,7 +16,7 @@ Classes:
 """
 import subprocess
 
-import CritOpS.utils as utils
+import critops.utils as utils
 
 
 def makefile(_tfile: (list, tuple), _name: str, _iter: int, _varchar: str, _vars: dict):

@@ -21,7 +21,7 @@ longDesc = r"""
                      /_/
 
 """ + """
-                        CritOpS
+                        critops
 A Critical Optimization Search tool for NEWT[1]
 A. Johnson
 
@@ -48,14 +48,14 @@ installReqs = ['pandas>=0.19']
 
 if __name__ == '__main__':
     setup(
-        name='CritOpS',
+        name='critops',
         version=version,
         description=shortDesc,
         long_description=longDesc,
         maintainer='A. Johnson',
         maintainer_email='1drew.e.johnson@gmail.com',
-        url='https://github.com/drewejohnson/CritOpS',
+        url='https://github.com/drewejohnson/critops',
         install_requires=installReqs,
         python_requires='>=3.4',
-        packages=['CritOpS']
+        packages=['critops']
     )

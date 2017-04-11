@@ -23,11 +23,11 @@ import argparse
 import os
 import sys
 
-from CritOpS import utils
-from CritOpS.constants import header, default_params
-from CritOpS.iterator import itermain
-from CritOpS.outputs import output_landing
-from CritOpS.readinputs import readmain
+from critops import utils
+from critops.constants import header, default_params
+from critops.iterator import itermain
+from critops.outputs import output_landing
+from critops.readinputs import readmain
 
 # Input parameters
 parser = argparse.ArgumentParser(description=header, formatter_class=argparse.RawDescriptionHelpFormatter)

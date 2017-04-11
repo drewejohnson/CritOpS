@@ -15,7 +15,7 @@ Functions:
 """
 import pandas as pd
 
-import CritOpS.utils as utils
+import critops.utils as utils
 
 
 def output_landing(iter_vecs: dict, k_vec: (list, tuple), _outtype: int, **kwargs):

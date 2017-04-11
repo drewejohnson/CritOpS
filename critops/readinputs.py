@@ -16,8 +16,8 @@ Functions:
 """
 import os.path
 
-import CritOpS.utils as utils
-from CritOpS import constants
+import critops.utils as utils
+from critops import constants
 
 iter_ints = ('iter_lim',)
 iter_floats = ('eps_k', 'inf', 'tiny', "k_target")
