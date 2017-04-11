@@ -30,7 +30,8 @@ from critops.outputs import output_landing
 from critops.readinputs import readmain
 
 # Input parameters
-parser = argparse.ArgumentParser(description=header, formatter_class=argparse.RawDescriptionHelpFormatter)
+parser = argparse.ArgumentParser(description=header, formatter_class=argparse.RawDescriptionHelpFormatter,
+                                 usage='critops inp_file param_file [-v] [-o OUTPUT]')
 parser.add_argument('inp_file', type=str, help='template SCALE input file')
 parser.add_argument('param_file', type=str, help='file containing parameters for operation')
 parser.add_argument('-v', '--verbose', help='reveal more of the mystery behind the operation', action='store_true')

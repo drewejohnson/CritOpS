@@ -44,13 +44,13 @@ def makefile(_tfile: (list, tuple), _name: str, _iter: int, _varchar: str, _vars
     return _ofile
 
 
-def update_itervar(iter_vars: dict, iter_vec: dict, kcur: float, ktarg: float):
+def update_itervar(iter_vars: dict, iter_vec: dict, kvec: (list, tuple), ktarg: float):
     """Simple function to update the iteration variables.
     Currently set up for a positive feedback on the variables.
     I.e. increasing each iteration variable will increase k
     :param iter_vars: Dictionary of iteration variables and their minima/maxima
     :param iter_vec: Dictionary of iteration variables and their values through the iteratio procedure
-    :param kcur: Current eigenvalue
+    :param kvec: Vector of eigenvalues
     :param ktarg: Target eigenvalue
     :return: status
         status = 0 if the updated value is inside the intended range
@@ -62,7 +62,12 @@ def update_itervar(iter_vars: dict, iter_vec: dict, kcur: float, ktarg: float):
 
     # Assumes only one iteration variable for now
     _var = list(iter_vars.keys())[0]
-    _des = iter_vec[_var][-1] * (ktarg / kcur) ** 2
+    _delk = [ktarg - kv for kv in kvec]
+
+    if len(kvec) <= 1:
+        _des = iter_vec[_var][-1] * (ktarg / kvec[-1]) ** 2
+    else:
+        _des = iter_vec[_var][-1] - _delk[-1] * (iter_vec[_var][-2] - iter_vec[_var][-1]) / (_delk[-2] - _delk[-1])
 
     if _des > iter_vars[_var][2]:
         iter_vec[_var].append(iter_vars[_var][2])
@@ -112,6 +117,12 @@ def itermain(tmp_list: (list, tuple), file_name: str, iter_vars: dict, kwargs: d
     :param kwargs: Additional keyword arguments
     :return: k_vec: List of progression of eigenvalue through iteration procedure
     :return: iter_vecs: Dictionary of iteration and their values through iteration procedure
+    :return: conv_type - reason for exiting iter_main
+        0: Accurately converged to target eigenvalue in specified iterations
+        1: iter_var exceeded specified maximum twice
+       -1: iter_var exceeded specified minimum twice
+        2: Reached iteration limit without reaching target eigenvalue
+       -2: Previous two k are close to similar 
     """
     # Make sure all the required keywords are present. If not, set to defaults from constants.py
     utils.check_defaults(kwargs)
@@ -147,15 +158,22 @@ def itermain(tmp_list: (list, tuple), file_name: str, iter_vars: dict, kwargs: d
         # check for convergance based on updated eigenvalue, and then a termination based on exceeding the specified
         # input range from the parameter file
         if abs(_k - kwargs['k_target']) < kwargs['eps_k']:
-            conv_type = 0
-            break
-        stat = update_itervar(iter_vars, iter_vecs, _k, kwargs['k_target'])
+            utils.oprint('  done', **kwargs)
+            return iter_vecs, k_vec, 0
+        if len(k_vec) > 1 and abs(_k - k_vec[-2]) < kwargs['eps_k']:
+            utils.oprint('  done', **kwargs)
+            return iter_vecs, k_vec, -2
+        stat = update_itervar(iter_vars, iter_vecs, k_vec, kwargs['k_target'])
         if stat == 0:
             conv_flag = False
         else:
             conv_type = stat
             if conv_flag:
-                break
+                utils.oprint('  done', **kwargs)
+                for var in iter_vecs:
+                    iter_vecs[var].pop()
+                return iter_vecs, k_vec, conv_type
+            conv_flag = True
 
     if _n == kwargs['iter_lim'] and conv_type is None:
         conv_type = 2

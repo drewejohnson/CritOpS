@@ -37,7 +37,7 @@ vMacro = 0
 vMicro = 0
 
 vDevel = 'dev'
-vDevelMicro = '1'
+vDevelMicro = '5'
 
 if vDevel:
     version = "{}.{}.{}.{}{}".format(vRelease, vMacro, vMicro, vDevel, vDevelMicro)
@@ -53,9 +53,10 @@ if __name__ == '__main__':
         description=shortDesc,
         long_description=longDesc,
         maintainer='A. Johnson',
-        maintainer_email='1drew.e.johnson@gmail.com',
+        maintainer_email='1drew.e.johnson [at] gmail.com',
         url='https://github.com/drewejohnson/critops',
         install_requires=installReqs,
         python_requires='>=3.4',
-        packages=['critops']
+        packages=['critops'],
+        license='MIT License'
     )

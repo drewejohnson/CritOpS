@@ -103,7 +103,8 @@ def check_inputs(temp_lines: list, iter_vars: dict, **kwargs):
         l_count += 1
 
     if _instance_count == 0:
-        utils.error('No instances of iteration variables {} found in input file'.format(', '.join(iter_vars.keys())),
+        utils.error('No instances of iteration variables {}{} found in input file'.format(kwargs['var_char'],
+                                                                                          ', '.join(iter_vars.keys())),
                     'check_inputs()', **kwargs)
 
     if not os.path.isfile(kwargs['exe_str']):

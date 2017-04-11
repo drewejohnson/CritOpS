@@ -33,12 +33,17 @@ def output_landing(iter_vecs: dict, k_vec: (list, tuple), _outtype: int, **kwarg
     utils.check_defaults(kwargs)
     out_messages = {0: " Completed successfullly",
                     1: "Terminated due to iteration parameter {} twice exceeding max value {}".format(
-                        list(iter_vecs.keys())[0], iter_vecs[list(iter_vecs.keys())[0]][2]),
+                        list(iter_vecs.keys())[0], iter_vecs[list(iter_vecs.keys())[0]][-1]),
                     -1: "Terminated due to iteration parameter {} twice exceeding minimum value {}".format(
-                        list(iter_vecs.keys())[0], iter_vecs[list(iter_vecs.keys())[0]][1]),
-                    2: "Terminated due to exceeding the iteration limit {}".format(kwargs['iter_lim'])
+                        list(iter_vecs.keys())[0], iter_vecs[list(iter_vecs.keys())[0]][-1]),
+                    2: "Terminated due to exceeding the iteration limit {}".format(kwargs['iter_lim']),
+                    -2: "Terminated due to static eigenvalue {}".format(k_vec[-1])
                     }
-    utils.oprint('End of operation. Status: {}'.format(out_messages[_outtype]))
+    if _outtype in out_messages:
+        outmessage = out_messages[_outtype]
+    else:
+        outmessage = _outtype
+    utils.oprint('End of operation. Status: {}'.format(outmessage))
     var_df = pd.DataFrame({_var: iter_vecs[_var] for _var in iter_vecs})
     var_df['k-eff'] = k_vec
     utils.oprint(var_df.to_string())
