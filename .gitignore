@@ -93,13 +93,9 @@ ENV/
 
 # Backup garbage
 *.ini
-*.bak
 
 # SCALE stuff
 applet_resources/
-*.ps
-*.msg
-*.tempdir.path
 
 # Scheduler
 *.pbs
