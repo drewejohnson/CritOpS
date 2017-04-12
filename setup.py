@@ -36,7 +36,7 @@ vRelease = 2
 vMacro = 0
 vMicro = 0
 
-vDevel = 'dev'
+vDevel = ''
 vDevelMicro = '7'
 
 if vDevel:
