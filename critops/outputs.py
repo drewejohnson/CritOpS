@@ -4,11 +4,10 @@ NRE6401 - Molten Salt Reactor
 
 CritOpS
 
-A. Johnson
-
 Objective: Functions for reading SCALE output files and writing output files
 
 Functions:
+
     parse_scale_output: Parse through the SCALE output file and return status
 
 """

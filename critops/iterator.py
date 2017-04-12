@@ -9,9 +9,13 @@ A. Johnson
 Objective: Main file for controlling the iteration scheme
 
 Functions:
+
     iter_main: Landing function that drives the iteration
+    
     makefile: Write the new output file using the value from iteration _iter
+    
     update_itervar: Simple function to update the iteration variables.    
+    
     parse_scale_out_eig: Read through the SCALE output file specified by _ofile and return status and eigenvalue (if present)
 
 """

@@ -9,7 +9,7 @@
 
                         CritOpS
 A Critical Optimization Search tool for NEWT[1]
-A. Johnson
+Andrew Johnson
 
 Objective: Iteratively update a parameter in a template NEWT file in
 order to obtain a critical system.

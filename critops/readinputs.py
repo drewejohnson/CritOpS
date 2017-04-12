@@ -4,12 +4,11 @@ NRE6401 - Molten Salt Reactor
 
 CritOps
 
-A. Johnson
-
 
 Objective: Read the inputs, update global variables, and check for proper variable usage
 
 Functions:
+
     check_inputs: make sure values in global_parameters are good for running
     read_param: Read the parameter file and update values in globalparams
     readmain: Main driver for reading and processing the input files

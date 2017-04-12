@@ -1,8 +1,8 @@
 """
 
 NRE6401 - Molten Salt Reactor
+
 CritOpS
-A. Johnson
 
 constants
 
