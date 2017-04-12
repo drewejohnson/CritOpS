@@ -121,12 +121,13 @@ def parse_scale_out_eig(_ofile: str, **kwargs):
     return _stat, _rK
 
 
-def itermain(tmp_list: (list, tuple), file_name: str, iter_vars: dict, kwargs: dict):
+def itermain(tmp_list: (list, tuple), file_name: str, iter_vars: dict, exp_vars: dict, kwargs: dict):
     """Main function for controlling the iteration
     
     :param tmp_list: List of lines from template file
     :param file_name: Name of template file
     :param iter_vars: Dictionary of iteration variables and their starting, minima, and maximum values
+    :param exp_vars: Dictionary of any variables that are defined in terms of iteration variables
     :param kwargs: Additional keyword arguments
     
     :return: k_vec: List of progression of eigenvalue through iteration procedure
@@ -147,10 +148,8 @@ def itermain(tmp_list: (list, tuple), file_name: str, iter_vars: dict, kwargs: d
     # Make sure all the required keywords are present. If not, set to defaults from constants.py
     utils.check_defaults(kwargs)
 
-    iter_vecs = {}
-
-    for _var in iter_vars:
-        iter_vecs[_var] = [iter_vars[_var][0], ]
+    iter_vecs = {_var: iter_vars[_var][0] for _var in iter_vars}
+    exp_vecs = {_var: [] for _var in exp_vars}
 
     utils.oprint("Starting the iteration procedure....\n", **kwargs)
 

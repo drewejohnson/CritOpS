@@ -33,7 +33,7 @@ def read_param(_pfile, **kwargs):
     """
 
     iter_vars = {}
-
+    exp_vars = {}
     utils.vprint('Reading from parameter file {}'.format(_pfile), **kwargs)
     with open(_pfile, 'r') as pobj:
         _line = pobj.readline()
@@ -48,6 +48,8 @@ def read_param(_pfile, **kwargs):
                 else:
                     utils.error('Need starting, minimum, and maximum value for parameter {}'.format(_lSplit[1]),
                                 _locStr.format(_pfile.name, _count), **kwargs)
+            elif _lSplit[0] == 'expr':
+                exp_vars[_lSplit[1]] = _line[_line.index(_lSplit[2]):]
             elif _lSplit[0] == 'var_char':
                 if _lSplit[1] in constants.supVarChars:
                     kwargs['var_char'] = _lSplit[1]
@@ -63,12 +65,16 @@ def read_param(_pfile, **kwargs):
             _line = pobj.readline()
             _count += 1
     utils.vprint('  done', **kwargs)
-    return iter_vars
+    return iter_vars, exp_vars
 
 
-def check_inputs(temp_lines: list, iter_vars: dict, **kwargs):
+def check_inputs(temp_lines: list, iter_vars: dict, exp_vars: dict, **kwargs):
     """Run over the inputs and make sure things are good for operation"""
     utils.vprint('Checking run parameters', **kwargs)
+
+    if not os.path.isfile(kwargs['exe_str']):
+        utils.error('Execution file {} does not exist'.format(kwargs['exe_str']), 'check_inputs()', **kwargs)
+
     for _int in iter_ints:
         try:
             assert kwargs[_int] % 1 == 0
@@ -95,22 +101,26 @@ def check_inputs(temp_lines: list, iter_vars: dict, **kwargs):
                     'iter_var <var> <start> <min> <max>', 'check_inputs()', **kwargs)
 
     l_count = 1
-    _instance_count = 0
+    iter_count = 0
+    exp_count = 0
     for _line in temp_lines:
         if kwargs['var_char'] in _line:
-            if _line.split(kwargs['var_char'])[1].split()[0] in iter_vars:
-                _instance_count += 1
+            var = _line.split(kwargs['var_char'])[1].split()[0]
+            if var in iter_vars:
+                iter_count += 1
                 utils.vprint('  {} at line {} in input file'.
-                             format(_line.split(kwargs['var_char'])[1].split()[0], l_count), **kwargs)
+                             format(var, l_count), **kwargs)
+            elif var in exp_vars:
+                exp_count += 1
+                utils.vprint('  {} at line {} in input file'.
+                             format(var, l_count), **kwargs)
         l_count += 1
 
-    if _instance_count == 0:
+    if iter_count == 0 and exp_count == 0:
+        varlist = list(iter_vars.keys()) + list(exp_vars.keys())
         utils.error('No instances of iteration variables {}{} found in input file'.format(kwargs['var_char'],
-                                                                                          ', '.join(iter_vars.keys())),
+                                                                                          ', '.join(varlist)),
                     'check_inputs()', **kwargs)
-
-    if not os.path.isfile(kwargs['exe_str']):
-        utils.error('Execution file {} does not exist'.format(kwargs['exe_str']), 'check_inputs()', **kwargs)
 
     utils.vprint('  done', **kwargs)
 
@@ -125,7 +135,7 @@ def readmain(tmp_file, param_file, kwargs: dict):
         - output (None) - print to screen
         - Plus additional iteration parameters
     
-    :return: List of valid template file lines and dictionary of interation variables
+    :return: List of valid template file lines and dictionary of interation and expression variables.
         Updates kwargs based on values in param_file
     """
     utils.check_defaults(kwargs)
@@ -133,7 +143,7 @@ def readmain(tmp_file, param_file, kwargs: dict):
     with open(tmp_file, 'r') as file:
         tmp_lines = file.readlines()
     utils.vprint('  done', **kwargs)
-    iter_vars = read_param(param_file, **kwargs)
-    check_inputs(tmp_lines, iter_vars, **kwargs)
+    iter_vars, exp_dict = read_param(param_file, **kwargs)
+    check_inputs(tmp_lines, iter_vars, exp_dict, **kwargs)
 
-    return tmp_lines, iter_vars
+    return tmp_lines, iter_vars, exp_dict

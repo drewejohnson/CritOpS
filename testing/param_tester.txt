@@ -1,4 +1,5 @@
 var_char $
-iter_var del_z 10 5.0 15.0
+iter_var thick 10 5.0 15.0
+expr refl 30 - thick
 iter_lim 50
 eps_k 1E-4

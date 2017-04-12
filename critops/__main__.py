@@ -63,7 +63,7 @@ if __name__ == '__main__':
             utils.error('File {} does not exist'.format(args[file]), 'CritOps __main__', args)
 
     # Read the input files
-    template, iter_vars = readmain(args['inp_file'], args['param_file'], kwargs)
+    template, iter_vars, expr_dict = readmain(args['inp_file'], args['param_file'], kwargs)
 
     # Start the iteration
     iter_vecs, k_vec, conv_type = itermain(template, args['inp_file'], iter_vars, kwargs)

@@ -33,10 +33,10 @@ order to obtain a critical system.
 \tvol. 174, no.2, pp. 196-213, 2011."""
 
 vRelease = 2
-vMacro = 0
+vMacro = 1
 vMicro = 0
 
-vDevel = ''
+vDevel = 'dev'
 vDevelMicro = '7'
 
 if vDevel:
@@ -44,7 +44,7 @@ if vDevel:
 else:
     version = "{}.{}.{}".format(vRelease, vMacro, vMicro)
 
-installReqs = ['pandas>=0.19']
+installReqs = ['pandas>=0.19', 'numexpr']
 
 if __name__ == '__main__':
     setup(
