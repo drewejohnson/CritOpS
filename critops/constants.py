@@ -17,7 +17,7 @@ default_params = {
     'inf': 1E30, 'tiny': 1E-16, 'var_char': '$', 'exe_str': 'C:\\SCALE-6.2.1\\bin\\scalerte.exe'
 }
 
-pName = "CritOpS-NEWT  v2.0.0dev5"
+pName = "CritOpS-NEWT  v2.0.1"
 asciiHeader = r"""
    ______     _ __  ____       _____      _   _________       ________
   / ____/____(_) /_/ __ \____ / ___/     / | / / ____/ |     / /_  __/
