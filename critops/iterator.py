@@ -180,7 +180,7 @@ def itermain(tmp_list: (list, tuple), file_name: str, iter_vars: dict, kwargs: d
         if abs(_k - kwargs['k_target']) < kwargs['eps_k']:
             utils.oprint('  done', **kwargs)
             return iter_vecs, k_vec, 0
-        if len(k_vec) > 1 and abs(_k - k_vec[-2]) < kwargs['eps_k']:
+        if len(k_vec) > 2 and abs(_k - k_vec[-2]) < kwargs['eps_k']:
             utils.oprint('  done', **kwargs)
             return iter_vecs, k_vec, -2
         stat = update_itervar(iter_vars, iter_vecs, k_vec, kwargs['k_target'])
