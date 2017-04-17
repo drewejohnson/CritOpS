@@ -30,11 +30,13 @@ def read_param(_pfile, **kwargs):
     :param _pfile: Parameter file
     
     :return: iter_vars: Dictionary of iteration variables and their starting, minima, and maximum values
+    :return: updated keyword arguments
     """
 
     iter_vars = {}
+    newkwargs = {}
 
-    utils.vprint('Reading from parameter file {}'.format(_pfile), **kwargs)
+    utils.vprint('Reading from parameter file {}\n'.format(_pfile), **kwargs)
     with open(_pfile, 'r') as pobj:
         _line = pobj.readline()
         _count = 1
@@ -50,25 +52,37 @@ def read_param(_pfile, **kwargs):
                                 _locStr.format(_pfile.name, _count), **kwargs)
             elif _lSplit[0] == 'var_char':
                 if _lSplit[1] in constants.supVarChars:
-                    kwargs['var_char'] = _lSplit[1]
+                    newkwargs['var_char'] = _lSplit[1]
                 else:
                     utils.error('Variable character {} not supported at this moment.\n'.format(_lSplit[1]),
                                 _locStr.format(_pfile.name, _count), **kwargs)
             elif _lSplit[0] in iter_floats:
-                kwargs[_lSplit[0]] = float(_lSplit[1])
+                newkwargs[_lSplit[0]] = float(_lSplit[1])
             elif _lSplit[0] in iter_ints:
-                kwargs[_lSplit[0]] = int(_lSplit[1])
+                newkwargs[_lSplit[0]] = int(_lSplit[1])
             elif _lSplit[0] == 'exe_str':
-                kwargs['exe_str'] = _lSplit[1]
+                newkwargs['exe_str'] = _lSplit[1]
+            elif _lSplit[0] == 'k-id':
+                newkwargs['k-id'] = _line[5:-1]
+                utils.oprint('new k-id: {}\n'.format(newkwargs['k-id']))
+            elif _lSplit[0] == 'k-col':
+                newkwargs['k-col'] = int(_lSplit[1])
+                utils.oprint('new k-col: {}\n'.format(newkwargs['k-col']))
             _line = pobj.readline()
             _count += 1
-    utils.vprint('  done', **kwargs)
-    return iter_vars
+
+    for arg in kwargs:
+        if arg not in newkwargs:
+            newkwargs[arg] = kwargs[arg]
+
+    utils.vprint('  done\n', **kwargs)
+
+    return iter_vars, newkwargs
 
 
 def check_inputs(temp_lines: list, iter_vars: dict, **kwargs):
     """Run over the inputs and make sure things are good for operation"""
-    utils.vprint('Checking run parameters', **kwargs)
+    utils.vprint('Checking run parameters\n', **kwargs)
     for _int in iter_ints:
         try:
             assert kwargs[_int] % 1 == 0
@@ -106,7 +120,8 @@ def check_inputs(temp_lines: list, iter_vars: dict, **kwargs):
 
     if _instance_count == 0:
         utils.error('No instances of iteration variables {}{} found in input file\n'.format(kwargs['var_char'],
-                                                                                          ', '.join(iter_vars.keys())),
+                                                                                            ', '.join(
+                                                                                                iter_vars.keys())),
                     'check_inputs()\n', **kwargs)
 
     if not os.path.isfile(kwargs['exe_str']):
@@ -133,7 +148,6 @@ def readmain(tmp_file, param_file, kwargs: dict):
     with open(tmp_file, 'r') as file:
         tmp_lines = file.readlines()
     utils.vprint('  done\n', **kwargs)
-    iter_vars = read_param(param_file, **kwargs)
+    iter_vars, kwargs = read_param(param_file, **kwargs)
     check_inputs(tmp_lines, iter_vars, **kwargs)
-
-    return tmp_lines, iter_vars
+    return tmp_lines, iter_vars, kwargs

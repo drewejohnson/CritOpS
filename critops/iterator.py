@@ -19,6 +19,7 @@ Functions:
     parse_scale_out_eig: Read through the SCALE output file specified by _ofile and return status and eigenvalue (if present)
 
 """
+import os
 import subprocess
 
 import critops.utils as utils
@@ -101,19 +102,32 @@ def parse_scale_out_eig(_ofile: str, **kwargs):
         status = False if output file exists but no eigenvalue was found (possible error in input file syntax)
         exit operation if no output file found
     """
+    _filerelpath = os.path.relpath(_ofile)
+
     try:
         open(_ofile, 'r').close()
     except IOError:
-        utils.error("SCALE output file {} not found\n".format(_ofile), 'parse_scale_out_eig()\n', **kwargs)
+        utils.error("SCALE output file {} not found\n".format(_filerelpath), 'parse_scale_out_eig()\n', **kwargs)
 
     _rK = None
     _stat = False
-    utils.vprint('\n Parsing output file {}\n'.format(_ofile), **kwargs)
+
+    if 'k-id' not in kwargs:
+        _kid = 'k-eff = '
+    else:
+        _kid = kwargs['k-id']
+
+    if 'k-col' not in kwargs:
+        _kcol = 2
+    else:
+        _kcol = kwargs['k-col']
+
+    utils.vprint('\n Parsing output file {}\n'.format(_filerelpath), **kwargs)
     with open(_ofile, 'r') as _outObj:
         _line = _outObj.readline()
         while _line != "":
-            if "k-eff = " in _line:
-                _rK = float(_line.split()[-1])
+            if _kid in _line:
+                _rK = float(_line.split()[_kcol])
                 _stat = True
                 break
             _line = _outObj.readline()
@@ -180,7 +194,9 @@ def itermain(tmp_list: (list, tuple), file_name: str, iter_vars: dict, kwargs: d
         if abs(_k - kwargs['k_target']) < kwargs['eps_k']:
             utils.oprint('  done\n', **kwargs)
             return iter_vecs, k_vec, 0
-        if len(k_vec) > 2 and abs(_k - k_vec[-2]) < kwargs['eps_k']:
+
+        # quit if k has not changed significantly
+        if kwargs['stalequit'] and len(k_vec) > 2 and abs(_k - k_vec[-2]) < kwargs['eps_k']:
             utils.oprint('  done\n', **kwargs)
             return iter_vecs, k_vec, -2
         stat = update_itervar(iter_vars, iter_vecs, k_vec, kwargs['k_target'])

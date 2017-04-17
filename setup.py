@@ -33,11 +33,11 @@ order to obtain a critical system.
 \tvol. 174, no.2, pp. 196-213, 2011."""
 
 vRelease = 2
-vMacro = 0
-vMicro = 2
+vMacro = 1
+vMicro = 0
 
-vDevel = ''
-vDevelMicro = '7'
+vDevel = 'dev'
+vDevelMicro = '1'
 
 if vDevel:
     version = "{}.{}.{}.{}{}".format(vRelease, vMacro, vMicro, vDevel, vDevelMicro)

@@ -41,7 +41,7 @@
 
 
 \title{CritOpS Documentation}
-\date{Apr 12, 2017}
+\date{Apr 17, 2017}
 \release{2.0.0}
 \author{Andrew Johnson}
 \newcommand{\sphinxlogo}{}
@@ -57,7 +57,7 @@
 
 
 \chapter{Intro}
-\label{\detokenize{intro:intro}}\label{\detokenize{intro:welcome-to-critops-s-documentation}}\label{\detokenize{intro::doc}}
+\label{\detokenize{intro:intro}}\label{\detokenize{intro::doc}}\label{\detokenize{intro:welcome-to-critops-s-documentation}}
 This is the documentation for \sphinxstyleemphasis{CritOpS}, a Critical Optimization Search tool for use with \sphinxtitleref{NEWT{}`{[}1{]}.
 *CritOpS* is designed to iteratively modify inputs for {}`NEWT} to obtain a desired eigenvalue.
 More documentation will be added before the final release of this code, including examples and validation testing.
@@ -82,7 +82,7 @@ See \sphinxcode{testing/iter\_tester.inp} and \sphinxcode{testing/param\_tester.
 
 
 \chapter{iterator}
-\label{\detokenize{iterator:iterator}}\label{\detokenize{iterator:module-critops.iterator}}\label{\detokenize{iterator::doc}}\index{critops.iterator (module)}
+\label{\detokenize{iterator::doc}}\label{\detokenize{iterator:module-critops.iterator}}\label{\detokenize{iterator:iterator}}\index{critops.iterator (module)}
 NRE6401 - Molten Salt Reactor
 
 CritOpS
@@ -211,7 +211,7 @@ exit operation if no output file found
 
 
 \chapter{readinputs}
-\label{\detokenize{readinputs:readinputs}}\label{\detokenize{readinputs:module-critops.readinputs}}\label{\detokenize{readinputs::doc}}\index{critops.readinputs (module)}
+\label{\detokenize{readinputs:module-critops.readinputs}}\label{\detokenize{readinputs:readinputs}}\label{\detokenize{readinputs::doc}}\index{critops.readinputs (module)}
 NRE6401 - Molten Salt Reactor
 
 CritOps
@@ -265,6 +265,9 @@ Read the parameter file and update values in kwargs
 
 \item[{Returns}] \leavevmode
 iter\_vars: Dictionary of iteration variables and their starting, minima, and maximum values
+
+\item[{Returns}] \leavevmode
+updated keyword arguments
 
 \end{description}\end{quote}
 
