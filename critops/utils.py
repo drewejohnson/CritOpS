@@ -34,7 +34,7 @@ def oprint(_msg, **kwargs):
     Else, append message to output file"
     """
     if 'output' not in kwargs or kwargs['output'] is None:
-        print(_msg)
+        print(_msg, end='')
     else:
         with open(kwargs['output'], 'a') as outobj:
             outobj.write(_msg)

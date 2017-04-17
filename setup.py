@@ -34,7 +34,7 @@ order to obtain a critical system.
 
 vRelease = 2
 vMacro = 0
-vMicro = 1
+vMicro = 2
 
 vDevel = ''
 vDevelMicro = '7'

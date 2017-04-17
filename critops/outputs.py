@@ -43,8 +43,8 @@ def output_landing(iter_vecs: dict, k_vec: (list, tuple), _outtype: int, **kwarg
     if _outtype in out_messages:
         outmessage = out_messages[_outtype]
     else:
-        outmessage = _outtype
-    utils.oprint('End of operation. Status: {}'.format(outmessage))
+        outmessage = str(_outtype)
+    utils.oprint('End of operation. Status: {}\n'.format(outmessage))
     var_df = pd.DataFrame({_var: iter_vecs[_var] for _var in iter_vecs})
     var_df['k-eff'] = k_vec
     utils.oprint(var_df.to_string())

@@ -104,11 +104,11 @@ def parse_scale_out_eig(_ofile: str, **kwargs):
     try:
         open(_ofile, 'r').close()
     except IOError:
-        utils.error("SCALE output file {} not found".format(_ofile), 'parse_scale_out_eig()', **kwargs)
+        utils.error("SCALE output file {} not found\n".format(_ofile), 'parse_scale_out_eig()\n', **kwargs)
 
     _rK = None
     _stat = False
-    utils.vprint('\n Parsing output file {}'.format(_ofile), **kwargs)
+    utils.vprint('\n Parsing output file {}\n'.format(_ofile), **kwargs)
     with open(_ofile, 'r') as _outObj:
         _line = _outObj.readline()
         while _line != "":
@@ -117,7 +117,7 @@ def parse_scale_out_eig(_ofile: str, **kwargs):
                 _stat = True
                 break
             _line = _outObj.readline()
-    utils.vprint('  done', **kwargs)
+    utils.vprint('  done\n', **kwargs)
     return _stat, _rK
 
 
@@ -163,25 +163,25 @@ def itermain(tmp_list: (list, tuple), file_name: str, iter_vars: dict, kwargs: d
         _n += 1
         _iterfile = makefile(tmp_list, file_name, _n, kwargs['var_char'],
                              {_var: iter_vecs[_var][-1] for _var in iter_vars})
-        utils.vprint('Running SCALE iteration number {}...'.format(_n), **kwargs)
+        utils.vprint('\nRunning SCALE iteration number {}...\n'.format(_n), **kwargs)
         subprocess.call([kwargs['exe_str'], _iterfile])
-        utils.vprint('  done', **kwargs)
+        utils.vprint('  done\n', **kwargs)
         stat, _k = parse_scale_out_eig(_iterfile.replace('.inp', '.out'), **kwargs)
         if stat:  # successful operation
-            utils.oprint("  {0:<3}: {1}".format(_n, _k), **kwargs)
+            utils.oprint("  {0:<3}: {1}\n".format(_n, _k), **kwargs)
             k_vec.insert(_n - 1, _k)
         else:
             utils.error('Could not find value of k-eff for iteration file {0}.inp\n'
-                        'Check {0}.out for error message'.format(file_name),
-                        'itermain() of iteration {}'.format(_n), **kwargs)
+                        'Check {0}.out for error message\n'.format(file_name),
+                        'itermain() of iteration {}\n'.format(_n), **kwargs)
 
         # check for convergance based on updated eigenvalue, and then a termination based on exceeding the specified
         # input range from the parameter file
         if abs(_k - kwargs['k_target']) < kwargs['eps_k']:
-            utils.oprint('  done', **kwargs)
+            utils.oprint('  done\n', **kwargs)
             return iter_vecs, k_vec, 0
         if len(k_vec) > 2 and abs(_k - k_vec[-2]) < kwargs['eps_k']:
-            utils.oprint('  done', **kwargs)
+            utils.oprint('  done\n', **kwargs)
             return iter_vecs, k_vec, -2
         stat = update_itervar(iter_vars, iter_vecs, k_vec, kwargs['k_target'])
         if stat == 0:
@@ -189,7 +189,7 @@ def itermain(tmp_list: (list, tuple), file_name: str, iter_vars: dict, kwargs: d
         else:
             conv_type = stat
             if conv_flag:
-                utils.oprint('  done', **kwargs)
+                utils.oprint('  done\n', **kwargs)
                 for var in iter_vecs:
                     iter_vecs[var].pop()
                 return iter_vecs, k_vec, conv_type
@@ -198,5 +198,5 @@ def itermain(tmp_list: (list, tuple), file_name: str, iter_vars: dict, kwargs: d
     if _n == kwargs['iter_lim'] and conv_type is None:
         conv_type = 2
 
-    utils.oprint('  done', **kwargs)
+    utils.oprint('  done\n', **kwargs)
     return iter_vecs, k_vec, conv_type
