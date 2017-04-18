@@ -1,9 +1,7 @@
 """
-
-NRE6401 - Molten Salt Reactor
-
 CritOps
 
+Andrew Johnson
 
 Objective: Read the inputs, update global variables, and check for proper variable usage
 

@@ -1,10 +1,7 @@
 """
-
-NRE6401 - Molten Salt Reactor
-
 CritOpS
 
-A. Johnson
+Andrew Johnson
 
 Objective: Main file for controlling the iteration scheme
 
@@ -12,11 +9,13 @@ Functions:
 
     iter_main: Landing function that drives the iteration
     
-    makefile: Write the new output file using the value from iteration _iter
+    makefile: Write the new output file using the value from iteration 
+    _iter
     
     update_itervar: Simple function to update the iteration variables.    
     
-    parse_scale_out_eig: Read through the SCALE output file specified by _ofile and return status and eigenvalue (if present)
+    parse_scale_out_eig: Read through the SCALE output file specified by 
+    _ofile and return status and eigenvalue (if present)
 
 """
 import os
@@ -25,12 +24,11 @@ import subprocess
 import critops.utils as utils
 
 
-def makefile(_tfile: (list, tuple), _name: str, _iter: int, _varchar: str, _vars: dict):
+def makefile(_tempfile: str, _iter: int, _varchar: str, _vars: dict):
     """
     Write the new output file using the value from iteration _iter
     
-    :param _tfile: Template output file with variables to be replaced
-    :param _name: Name of original file
+    :param _tempfile: Name of original file
     :param _iter: Iteration number
     :param _varchar: Variable character to update with new_val
     :param _vars: Dictionary with iteration variables as keys and their new values as keys
@@ -38,21 +36,24 @@ def makefile(_tfile: (list, tuple), _name: str, _iter: int, _varchar: str, _vars
     
     :return: Name of input file
     """
-    _ofile = _name[:_name.rfind('.')] + "_" + str(_iter) + ".inp"
+    _ofile = _tempfile[:_tempfile.rfind('.')] + "_" + str(_iter) + ".inp"
 
-    with open(_ofile, 'w') as _outObj:
-        for _line in _tfile:
-            if _varchar not in _line:
-                _outObj.write(_line)
-            else:
-                _var = _line[_line.index(_varchar):].split()[0][1:]
-                # assumes that iteration variable will be followed by a space
-                _outObj.write(_line.replace(_varchar + _var, "{:7.5f}".format(_vars[_var])))
+    with open(_tempfile, 'r') as tempobj:
+        with open(_ofile, 'w') as outobj:
+            _line = tempobj.readline()
+            while _line != '':
+                if _varchar not in _line:
+                    outobj.write(_line)
+                else:
+                    _var = _line[_line.index(_varchar):].split()[0][1:]
+                    # assumes that iteration variable will be followed by a space
+                    outobj.write(_line.replace(_varchar + _var, "{:7.5f}".format(_vars[_var])))
+                _line = tempobj.readline()
 
     return _ofile
 
 
-def update_itervar(iter_vars: dict, iter_vec: dict, kvec: (list, tuple), ktarg: float):
+def update_itervar(iter_vars: dict, iter_vec: dict, kvec: (list, tuple), ktarg: float, **kwargs):
     """Simple function to update the iteration variables.
     Currently set up for a positive feedback on the variables.
     I.e. increasing each iteration variable will increase k
@@ -74,7 +75,14 @@ def update_itervar(iter_vars: dict, iter_vec: dict, kvec: (list, tuple), ktarg: 
     _var = list(iter_vars.keys())[0]
     _delk = [ktarg - kv for kv in kvec]
 
+    if 'tiny' in kwargs:
+        tiny = kwargs['tiny']
+    else:
+        tiny = 1E-8
+
     if len(kvec) <= 1:
+        if abs(kvec[-1]) < tiny:
+            utils.error('Possible divide by zero with value {0}\n'.format(kvec[-1]), 'update_itervar()', **kwargs)
         _des = iter_vec[_var][-1] * (ktarg / kvec[-1]) ** 2
     else:
         _des = iter_vec[_var][-1] - _delk[-1] * (iter_vec[_var][-2] - iter_vec[_var][-1]) / (_delk[-2] - _delk[-1])
@@ -135,10 +143,9 @@ def parse_scale_out_eig(_ofile: str, **kwargs):
     return _stat, _rK
 
 
-def itermain(tmp_list: (list, tuple), file_name: str, iter_vars: dict, kwargs: dict):
+def itermain(file_name: str, iter_vars: dict, kwargs: dict):
     """Main function for controlling the iteration
     
-    :param tmp_list: List of lines from template file
     :param file_name: Name of template file
     :param iter_vars: Dictionary of iteration variables and their starting, minima, and maximum values
     :param kwargs: Additional keyword arguments
@@ -175,7 +182,7 @@ def itermain(tmp_list: (list, tuple), file_name: str, iter_vars: dict, kwargs: d
 
     while _n < kwargs['iter_lim']:
         _n += 1
-        _iterfile = makefile(tmp_list, file_name, _n, kwargs['var_char'],
+        _iterfile = makefile(file_name, _n, kwargs['var_char'],
                              {_var: iter_vecs[_var][-1] for _var in iter_vars})
         utils.vprint('\nRunning SCALE iteration number {}...\n'.format(_n), **kwargs)
         subprocess.call([kwargs['exe_str'], _iterfile])
@@ -199,7 +206,7 @@ def itermain(tmp_list: (list, tuple), file_name: str, iter_vars: dict, kwargs: d
         if kwargs['stalequit'] and len(k_vec) > 2 and abs(_k - k_vec[-2]) < kwargs['eps_k']:
             utils.oprint('  done\n', **kwargs)
             return iter_vecs, k_vec, -2
-        stat = update_itervar(iter_vars, iter_vecs, k_vec, kwargs['k_target'])
+        stat = update_itervar(iter_vars, iter_vecs, k_vec, kwargs['k_target'], **kwargs)
         if stat == 0:
             conv_flag = False
         else:

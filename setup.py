@@ -3,7 +3,7 @@
 Setup
     - Properly install CritOpS
 
-A. Johnson
+Andrew Johnson
 
 Install with python setup.py install
 
@@ -37,7 +37,7 @@ vMacro = 1
 vMicro = 0
 
 vDevel = 'dev'
-vDevelMicro = '1'
+vDevelMicro = '2'
 
 if vDevel:
     version = "{}.{}.{}.{}{}".format(vRelease, vMacro, vMicro, vDevel, vDevelMicro)

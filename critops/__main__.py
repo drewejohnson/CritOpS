@@ -66,7 +66,7 @@ if __name__ == '__main__':
     template, iter_vars, kwargs = readmain(args['inp_file'], args['param_file'], kwargs)
 
     # Start the iteration
-    iter_vecs, k_vec, conv_type = itermain(template, args['inp_file'], iter_vars, kwargs)
+    iter_vecs, k_vec, conv_type = itermain(args['inp_file'], iter_vars, kwargs)
 
     # Output
     output_landing(iter_vecs, k_vec, conv_type, **kwargs)

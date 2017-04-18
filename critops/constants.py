@@ -1,10 +1,7 @@
 """
-
-NRE6401 - Molten Salt Reactor
-
 CritOpS
 
-constants
+Andrew Johnson
 
 Objective: Header file for some useful constants
 
@@ -17,8 +14,8 @@ default_params = {
     'inf': 1E30, 'tiny': 1E-16, 'var_char': '$', 'exe_str': 'C:\\SCALE-6.2.1\\bin\\scalerte.exe',
     'k-id': 'k-eff = ', 'k-col': 2, 'stalequit': True
 }
-
-pName = "CritOpS-NEWT  v2.1.0"
+version = 'v2.1.0dev2'
+pName = "CritOpS-NEWT  []".format(version)
 asciiHeader = r"""
    ______     _ __  ____       _____      _   _________       ________
   / ____/____(_) /_/ __ \____ / ___/     / | / / ____/ |     / /_  __/

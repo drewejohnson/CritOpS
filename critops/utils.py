@@ -1,10 +1,7 @@
 """
-
-NRE6401 - Molten Salt Reactor
 CritOpS
-A. Johnson
 
-utils.py
+Andrew Johnson
 
 Objective: Utilities for error messages, variable type checking
 
