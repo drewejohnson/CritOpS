@@ -41,8 +41,8 @@
 
 
 \title{CritOpS Documentation}
-\date{Apr 17, 2017}
-\release{2.0.0}
+\date{Apr 19, 2017}
+\release{2.1.0}
 \author{Andrew Johnson}
 \newcommand{\sphinxlogo}{}
 \renewcommand{\releasename}{Release}
@@ -57,23 +57,109 @@
 
 
 \chapter{Intro}
-\label{\detokenize{intro:intro}}\label{\detokenize{intro::doc}}\label{\detokenize{intro:welcome-to-critops-s-documentation}}
-This is the documentation for \sphinxstyleemphasis{CritOpS}, a Critical Optimization Search tool for use with \sphinxtitleref{NEWT{}`{[}1{]}.
-*CritOpS* is designed to iteratively modify inputs for {}`NEWT} to obtain a desired eigenvalue.
+\label{\detokenize{intro::doc}}\label{\detokenize{intro:intro}}\label{\detokenize{intro:welcome-to-critops-s-documentation}}
+This is the documentation for CritOpS, a Critical Optimization Search tool for use with NEWT{[}1{]}.
+CritOpS is designed to iteratively modify inputs for NEWT to obtain a desired eigenvalue.
 More documentation will be added before the final release of this code, including examples and validation testing.
 
 
+\section{Setup}
+\label{\detokenize{intro:setup}}\label{\detokenize{intro:id1}}
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{git} \PYG{n}{clone} \PYG{n}{https}\PYG{p}{:}\PYG{o}{/}\PYG{o}{/}\PYG{n}{github}\PYG{o}{.}\PYG{n}{com}\PYG{o}{/}\PYG{n}{drewejohnson}\PYG{o}{/}\PYG{n}{CritOpS}\PYG{o}{.}\PYG{n}{git}
+\PYG{n}{cd} \PYG{n}{CritOpS}
+\PYG{n}{python} \PYG{n}{setup}\PYG{o}{.}\PYG{n}{py} \PYG{n}{install}
+\end{sphinxVerbatim}
+
+The code currently requires \sphinxtitleref{python3} due to some formatting calls, and \sphinxtitleref{pandas} for some better data output.
+
+
 \section{Usage}
-\label{\detokenize{intro:usage}}
-\sphinxstyleemphasis{CritOpS} can be run from the terminal while in the directory outside the \sphinxtitleref{critops} folder with the command
+\label{\detokenize{intro:id2}}\label{\detokenize{intro:usage}}
+CritOpS can be run from the terminal while in the directory outside the critops folder with the command
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYGZdl{} python critops \PYGZlt{}mainfile\PYGZgt{} \PYGZlt{}paramfile\PYGZgt{}
 \end{sphinxVerbatim}
 
-Where \sphinxtitleref{\textless{}mainfile\textgreater{}} is a valid \sphinxtitleref{NEWT} input file with some variables in place of valid values and \sphinxtitleref{\textless{}paramfile\textgreater{}} is the
+Where \textless{}mainfile\textgreater{} is a valid NEWT input file with some variables in place of valid values and \textless{}paramfile\textgreater{} is the
 file that contains limits on iteration parameters, desired k-eff, and indicates the variable to be iterated upon.
 See \sphinxcode{testing/iter\_tester.inp} and \sphinxcode{testing/param\_tester.txt} for one example case.
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{python3} \PYG{n}{CritOpS}\PYG{o}{.}\PYG{n}{py} \PYG{n}{inp\PYGZus{}file} \PYG{n}{param\PYGZus{}file} \PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{n}{v}\PYG{p}{]} \PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{n}{o} \PYG{n}{OUTPUT}\PYG{p}{]}
+
+\PYG{n}{positional} \PYG{n}{arguments}\PYG{p}{:}
+  \PYG{n}{inp\PYGZus{}file}              \PYG{n}{template} \PYG{n}{SCALE} \PYG{n+nb}{input} \PYG{n}{file}
+  \PYG{n}{param\PYGZus{}file}            \PYG{n}{file} \PYG{n}{containing} \PYG{n}{parameters} \PYG{k}{for} \PYG{n}{operation}
+
+\PYG{n}{optional} \PYG{n}{arguments}\PYG{p}{:}
+  \PYG{o}{\PYGZhy{}}\PYG{n}{h}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZhy{}}\PYG{n}{help}            \PYG{n}{show} \PYG{n}{this} \PYG{n}{help} \PYG{n}{message} \PYG{o+ow}{and} \PYG{n}{exit}
+  \PYG{o}{\PYGZhy{}}\PYG{n}{v}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZhy{}}\PYG{n}{verbose}         \PYG{n}{reveal} \PYG{n}{more} \PYG{n}{of} \PYG{n}{the} \PYG{n}{mystery} \PYG{n}{behind} \PYG{n}{the} \PYG{n}{operation}
+  \PYG{o}{\PYGZhy{}}\PYG{n}{o} \PYG{n}{OUTPUT}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZhy{}}\PYG{n}{output} \PYG{n}{OUTPUT}
+                        \PYG{n}{write} \PYG{n}{status} \PYG{n}{to} \PYG{n}{output} \PYG{n}{file}
+\end{sphinxVerbatim}
+
+The parameter file controls iteration procedure and \sphinxtitleref{SCALE} execution.
+Parameters that can be updated with the parameter file include
+\begin{enumerate}
+\item {} 
+\sphinxtitleref{k\_target}: Desired value of k-eff to be obtained from the \sphinxtitleref{SCALE} runs
+
+\item {} 
+\sphinxtitleref{eps\_k}: Acceptable accuracy between \sphinxtitleref{k\_target} and each value of k-eff
+
+\item {} 
+\sphinxtitleref{iter\_lim}: Maximum number of times to run \sphinxtitleref{SCALE}
+
+\item {} 
+\sphinxtitleref{exe\_str}: Absolute path to your \sphinxtitleref{SCALE} executable.
+
+\item {} 
+\sphinxtitleref{var\_char}: Whatever character you want to use as a designator for the variables
+
+\end{enumerate}
+
+Currently, \sphinxtitleref{CritOpS} only supports one iteration variable, which is declared in the parameter file with:
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{n}{iter\PYGZus{}var} \PYG{o}{\PYGZlt{}}\PYG{n}{var}\PYG{o}{\PYGZgt{}} \PYG{o}{\PYGZlt{}}\PYG{n}{start}\PYG{o}{\PYGZgt{}} \PYG{o}{\PYGZlt{}}\PYG{n+nb}{min}\PYG{o}{\PYGZgt{}} \PYG{o}{\PYGZlt{}}\PYG{n+nb}{max}\PYG{o}{\PYGZgt{}}
+\end{sphinxVerbatim}
+
+The input file should be a valid \sphinxtitleref{NEWT} input file, with some minor modifications.
+There should exist certain values defined as variables preceeded by the \sphinxtitleref{var\_char},
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+cuboid 20 5   0  0 \PYGZhy{}\PYGZdl{}del\PYGZus{}z
+\end{sphinxVerbatim}
+
+Given some input and parameter files, the code will create and execute successive input files,
+parse the outputs for the update k-eff, and then update the iteration variables.
+
+
+\section{License}
+\label{\detokenize{intro:license}}\label{\detokenize{intro:id3}}
+MIT License
+
+Copyright (c) 2017 Andrew Johnson
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the ``Software''), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
 \section{References}
@@ -81,16 +167,127 @@ See \sphinxcode{testing/iter\_tester.inp} and \sphinxcode{testing/param\_tester.
 {[}1{]}: M. D. DeHart, and S. Bowman, ``Reactor Physics Methods and Analysis Capabilities in SCALE,'' Nuclear Technology, Technical Paper vol. 174, no.2, pp. 196-213, 2011.
 
 
+\chapter{Importing CritOps Iterator}
+\label{\detokenize{external_iteration::doc}}\label{\detokenize{external_iteration:importing-critops-iterator}}
+
+\section{External Usage}
+\label{\detokenize{external_iteration:external-usage}}\label{\detokenize{external_iteration:external}}
+The \sphinxcode{CritOpS} module can easily be imported into external processing scripts.
+Presented here is an example of executing the iteration routine as a standalone process.
+
+\begin{sphinxVerbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{from} \PYG{n+nn}{critops}\PYG{n+nn}{.}\PYG{n+nn}{iterator} \PYG{k}{import} \PYG{n}{itermain}
+\PYG{k+kn}{from} \PYG{n+nn}{critops}\PYG{n+nn}{.}\PYG{n+nn}{utils} \PYG{k}{import} \PYG{n}{oprint}
+\PYG{k+kn}{from} \PYG{n+nn}{critops}\PYG{n+nn}{.}\PYG{n+nn}{outputs} \PYG{k}{import} \PYG{n}{output\PYGZus{}landing}
+
+
+\PYG{n}{critArgs} \PYG{o}{=} \PYG{p}{\PYGZob{}}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{k\PYGZhy{}target}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mf}{9.98515E\PYGZhy{}01}\PYG{p}{,}
+     \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{eps\PYGZus{}k}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{1}\PYG{n}{E}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{8}\PYG{p}{,}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{verbose}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{k+kc}{False}\PYG{p}{,}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{output}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{k+kc}{None}\PYG{p}{,}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{iter\PYGZus{}lim}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{15}\PYG{p}{,}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{exe\PYGZus{}str}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{C:}\PYG{l+s+se}{\PYGZbs{}\PYGZbs{}}\PYG{l+s+s1}{Scale\PYGZhy{}6.2.1}\PYG{l+s+se}{\PYGZbs{}\PYGZbs{}}\PYG{l+s+s1}{bin}\PYG{l+s+se}{\PYGZbs{}\PYGZbs{}}\PYG{l+s+s1}{scalerte.exe}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{k\PYGZhy{}id}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Input buckling}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{k\PYGZhy{}col}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{l+m+mi}{9}\PYG{p}{,}
+    \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{stalequit}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{k+kc}{False}\PYG{p}{,}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{iter\PYGZus{}var} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{buck}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{:} \PYG{p}{(}\PYG{l+m+mf}{1.2E\PYGZhy{}03}\PYG{p}{,} \PYG{l+m+mf}{1.00E\PYGZhy{}03}\PYG{p}{,} \PYG{l+m+mf}{5.00E\PYGZhy{}3}\PYG{p}{)}\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{bFile} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{intHX5\PYGZus{}buck.inp}\PYG{l+s+s1}{\PYGZsq{}}
+
+\PYG{n}{oprint}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s1}{Starting buckling iteration}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{o}{*}\PYG{o}{*}\PYG{n}{critArgs}\PYG{p}{)}
+
+\PYG{n}{iter\PYGZus{}vec}\PYG{p}{,} \PYG{n}{k\PYGZus{}vec}\PYG{p}{,} \PYG{n}{conv\PYGZus{}type} \PYG{o}{=} \PYG{n}{itermain}\PYG{p}{(}\PYG{n}{bFile}\PYG{p}{,} \PYG{n}{iter\PYGZus{}var}\PYG{p}{,}
+
+\PYG{n}{output\PYGZus{}landing}\PYG{p}{(}\PYG{n}{iter\PYGZus{}vec}\PYG{p}{,} \PYG{n}{k\PYGZus{}vec}\PYG{p}{,} \PYG{n}{conv\PYGZus{}type}\PYG{p}{,} \PYG{o}{*}\PYG{o}{*}\PYG{n}{critArgs}\PYG{p}{)}
+\end{sphinxVerbatim}
+
+
+\section{Default Arguments}
+\label{\detokenize{external_iteration:default-arguments}}\label{\detokenize{external_iteration:defaults}}
+\noindent\begin{tabulary}{\linewidth}{|L|L|L|}
+\hline
+\sphinxstylethead{\relax 
+\sphinxstylestrong{Parameter}
+\unskip}\relax &\sphinxstylethead{\relax 
+\sphinxstylestrong{Default}
+\unskip}\relax &\sphinxstylethead{\relax 
+\sphinxstylestrong{Note}
+\unskip}\relax \\
+\hline
+\sphinxcode{eps\_k}
+&
+1E-4
+&
+Tightness on \sphinxtitleref{k} convergence
+\\
+\hline
+\sphinxcode{k\_target}
+&
+1.0
+&
+Desired \sphinxtitleref{k-eff}
+\\
+\hline
+\sphinxcode{iter\_lim}
+&
+50
+&
+Maximum number of iterations
+\\
+\hline
+\sphinxcode{tiny}
+&
+1E-16
+&
+Numerical zero
+\\
+\hline
+\sphinxcode{var\_char}
+&
+\sphinxcode{'\$'}
+&
+Character to identify iteration variables
+\\
+\hline
+\sphinxcode{k-id}
+&
+\sphinxcode{'k-eff = '}
+&
+String to identify line containing \sphinxtitleref{k-eff}
+\\
+\hline
+\sphinxcode{k-col}
+&
+2
+&
+Location of \sphinxtitleref{k-eff} in \sphinxcode{line.split()}
+\\
+\hline
+\sphinxcode{stalequit}
+&
+\sphinxcode{True}
+&
+Terminate if \sphinxtitleref{k-eff} hasn't changed
+\\
+\hline
+\sphinxcode{exe\_str}
+&
+C:\textbackslash{}SCALE-6.2.1\textbackslash{}bin\textbackslash{}scalerte.exe
+&
+Absolute path to \sphinxcode{SCALE} executable
+\\
+\hline\end{tabulary}
+
+
+
 \chapter{iterator}
-\label{\detokenize{iterator::doc}}\label{\detokenize{iterator:module-critops.iterator}}\label{\detokenize{iterator:iterator}}\index{critops.iterator (module)}
-NRE6401 - Molten Salt Reactor
-
+\label{\detokenize{iterator::doc}}\label{\detokenize{iterator:iterator}}\label{\detokenize{iterator:module-critops.iterator}}\index{critops.iterator (module)}
 CritOpS
-\begin{enumerate}
-\item {} 
-Johnson
 
-\end{enumerate}
+Andrew Johnson
 
 Objective: Main file for controlling the iteration scheme
 
@@ -99,22 +296,21 @@ Functions:
 
 iter\_main: Landing function that drives the iteration
 
-makefile: Write the new output file using the value from iteration \_iter
+makefile: Write the new output file using the value from iteration 
+\_iter
 
 update\_itervar: Simple function to update the iteration variables.
 
-parse\_scale\_out\_eig: Read through the SCALE output file specified by \_ofile and return status and eigenvalue (if present)
+parse\_scale\_out\_eig: Read through the SCALE output file specified by 
+\_ofile and return status and eigenvalue (if present)
 \end{quote}
 \index{itermain() (in module critops.iterator)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{iterator:critops.iterator.itermain}}\pysiglinewithargsret{\sphinxcode{critops.iterator.}\sphinxbfcode{itermain}}{\emph{tmp\_list: (\textless{}class `list'\textgreater{}}, \emph{\textless{}class `tuple'\textgreater{})}, \emph{file\_name: str}, \emph{iter\_vars: dict}, \emph{kwargs: dict}}{}
+\phantomsection\label{\detokenize{iterator:critops.iterator.itermain}}\pysiglinewithargsret{\sphinxcode{critops.iterator.}\sphinxbfcode{itermain}}{\emph{file\_name: str}, \emph{iter\_vars: dict}, \emph{kwargs: dict}}{}
 Main function for controlling the iteration
 \begin{quote}\begin{description}
 \item[{Parameters}] \leavevmode\begin{itemize}
-\item {} 
-\sphinxstyleliteralstrong{tmp\_list} -- List of lines from template file
-
 \item {} 
 \sphinxstyleliteralstrong{file\_name} -- Name of template file
 
@@ -154,7 +350,7 @@ conv\_type - reason for exiting iter\_main
 \index{update\_itervar() (in module critops.iterator)}
 
 \begin{fulllineitems}
-\phantomsection\label{\detokenize{iterator:critops.iterator.update_itervar}}\pysiglinewithargsret{\sphinxcode{critops.iterator.}\sphinxbfcode{update\_itervar}}{\emph{iter\_vars: dict}, \emph{iter\_vec: dict}, \emph{kvec: (\textless{}class `list'\textgreater{}}, \emph{\textless{}class `tuple'\textgreater{})}, \emph{ktarg: float}}{}
+\phantomsection\label{\detokenize{iterator:critops.iterator.update_itervar}}\pysiglinewithargsret{\sphinxcode{critops.iterator.}\sphinxbfcode{update\_itervar}}{\emph{iter\_vars: dict}, \emph{iter\_vec: dict}, \emph{kvec: (\textless{}class `list'\textgreater{}}, \emph{\textless{}class `tuple'\textgreater{})}, \emph{ktarg: float}, \emph{**kwargs}}{}
 Simple function to update the iteration variables.
 Currently set up for a positive feedback on the variables.
 I.e. increasing each iteration variable will increase k
@@ -211,10 +407,10 @@ exit operation if no output file found
 
 
 \chapter{readinputs}
-\label{\detokenize{readinputs:module-critops.readinputs}}\label{\detokenize{readinputs:readinputs}}\label{\detokenize{readinputs::doc}}\index{critops.readinputs (module)}
-NRE6401 - Molten Salt Reactor
-
+\label{\detokenize{readinputs::doc}}\label{\detokenize{readinputs:readinputs}}\label{\detokenize{readinputs:module-critops.readinputs}}\index{critops.readinputs (module)}
 CritOps
+
+Andrew Johnson
 
 Objective: Read the inputs, update global variables, and check for proper variable usage
 
@@ -284,7 +480,7 @@ Run over the inputs and make sure things are good for operation
 
 
 \chapter{outputs}
-\label{\detokenize{outputs:module-critops.outputs}}\label{\detokenize{outputs:outputs}}\label{\detokenize{outputs::doc}}\index{critops.outputs (module)}
+\label{\detokenize{outputs::doc}}\label{\detokenize{outputs:module-critops.outputs}}\label{\detokenize{outputs:outputs}}\index{critops.outputs (module)}
 NRE6401 - Molten Salt Reactor
 
 CritOpS

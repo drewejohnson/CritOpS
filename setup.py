@@ -37,7 +37,7 @@ vMacro = 1
 vMicro = 0
 
 vDevel = 'dev'
-vDevelMicro = '2'
+vDevelMicro = '3'
 
 if vDevel:
     version = "{}.{}.{}.{}{}".format(vRelease, vMacro, vMicro, vDevel, vDevelMicro)

@@ -11,6 +11,7 @@ Welcome to CritOpS's documentation!
    :caption: Contents:
 
    intro
+       external_iteration
    iterator
    readinputs
    outputs
