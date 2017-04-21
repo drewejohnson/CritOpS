@@ -80,7 +80,7 @@ def update_itervar(iter_vars: dict, iter_vec: dict, kvec: (list, tuple), ktarg: 
     else:
         tiny = 1E-8
 
-    if len(kvec) <= 1:
+    if len(kvec) <= 1 or abs(_delk[-1] - _delk[-1]) < tiny:
         if abs(kvec[-1]) < tiny:
             utils.error('Possible divide by zero with value {0}\n'.format(kvec[-1]), 'update_itervar()', **kwargs)
         _des = iter_vec[_var][-1] * (ktarg / kvec[-1]) ** 2
